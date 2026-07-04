@@ -12,3 +12,5 @@ export * from './info/InfoBubble';
 export * from './info/InfoBubbleOverlay';
 export * from './info/DrawInfoBubble';
 export * from './info/InfoBubbleEntry';
+export * from './marker/MarkerAnimationStore';
+export * from './marker/MarkerAnimationLayer';
