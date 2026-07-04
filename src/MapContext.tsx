@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { MapViewControllerInterface } from '@mapconductor/core';
+import type { MapViewControllerInterface } from '@mapconductor/js-sdk-core';
 
 /**
  * Context for sharing map controller across components

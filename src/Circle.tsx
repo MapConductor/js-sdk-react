@@ -6,7 +6,7 @@ import {
   type OnCircleEventHandler,
   type GeoPoint,
   type Serializable,
-} from '@mapconductor/core';
+} from '@mapconductor/js-sdk-core';
 
 interface CircleStateProps {
     state: CircleState;

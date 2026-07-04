@@ -1,5 +1,5 @@
 {
-  "name": "@mapconductor/react",
+  "name": "@mapconductor/js-sdk-react",
   "version": "0.1.0",
   "description": "React bindings for MapConductor SDK",
   "main": "./dist/index.js",
@@ -25,7 +25,7 @@
   "author": "MapConductor",
   "license": "MIT",
   "dependencies": {
-    "@mapconductor/core": "workspace:*"
+    "@mapconductor/js-sdk-core": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18.0.0"

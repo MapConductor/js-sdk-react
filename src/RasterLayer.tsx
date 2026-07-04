@@ -4,7 +4,7 @@ import {
   createRasterLayerState,
   type RasterLayerState,
   type RasterLayerSource,
-} from '@mapconductor/core';
+} from '@mapconductor/js-sdk-core';
 
 interface RasterLayerStateProps {
     state: RasterLayerState;

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { GeoPoint, MarkerIcon, Offset } from '@mapconductor/core';
+import type { GeoPoint, MarkerIcon, Offset } from '@mapconductor/js-sdk-core';
 
 export interface InfoBubbleEntry {
     readonly id: string;

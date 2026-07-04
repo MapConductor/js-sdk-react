@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { MapViewControllerInterface, MapOverlayRegistry } from '@mapconductor/core';
+import type { MapViewControllerInterface, MapOverlayRegistry } from '@mapconductor/js-sdk-core';
 
 /**
  * React hook that subscribes every overlay registered in `registry` to the

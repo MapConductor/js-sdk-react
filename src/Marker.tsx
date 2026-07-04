@@ -8,7 +8,7 @@ import {
   type MarkerIcon,
   type OnMarkerEventHandler,
   type GeoPoint,
-} from '@mapconductor/core';
+} from '@mapconductor/js-sdk-core';
 
 interface MarkerStateProps {
     state: MarkerState;

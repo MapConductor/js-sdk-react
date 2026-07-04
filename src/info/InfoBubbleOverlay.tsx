@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, type ReactNode, type CSSProperties } from 'react';
-import type { Offset } from '@mapconductor/core';
+import type { Offset } from '@mapconductor/js-sdk-core';
 
 interface InfoBubbleOverlayProps {
     /** Screen pixel offset of the anchor point (marker position projected to screen). */

@@ -2,7 +2,7 @@ import { useEffect, useId, type ReactNode } from 'react';
 import { DrawInfoBubble } from './DrawInfoBubble';
 import { useMapViewScope } from '../MapViewScope';
 import type { InfoBubbleEntry } from './InfoBubbleEntry';
-import type { GeoPoint, MarkerState, Offset } from '@mapconductor/core';
+import type { GeoPoint, MarkerState, Offset } from '@mapconductor/js-sdk-core';
 
 interface InfoBubbleProps {
     marker: MarkerState;

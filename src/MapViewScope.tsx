@@ -15,7 +15,7 @@ import {
   RasterLayerOverlay,
   type MapOverlayInterface,
   MapOverlayRegistry,
-} from '@mapconductor/core';
+} from '@mapconductor/js-sdk-core';
 import type { InfoBubbleEntry } from './info/InfoBubbleEntry';
 
 export class MapViewScope {

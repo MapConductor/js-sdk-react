@@ -9,7 +9,7 @@ import {
   type GeoRectBounds,
   type Serializable,
   fromLatLng,
-} from '@mapconductor/core';
+} from '@mapconductor/js-sdk-core';
 
 interface PolygonStateProps {
     state: PolygonState;

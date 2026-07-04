@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useMapViewController } from '../MapContext';
-import { type MapCameraPosition, type CameraOptions, type GeoRectBounds } from '@mapconductor/core';
+import { type MapCameraPosition, type CameraOptions, type GeoRectBounds } from '@mapconductor/js-sdk-core';
 
 /**
  * Hook for controlling the map camera

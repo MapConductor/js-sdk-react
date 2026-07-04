@@ -6,7 +6,7 @@ import {
   type OnGroundImageEventHandler,
   type GeoRectBounds,
   type Serializable,
-} from '@mapconductor/core';
+} from '@mapconductor/js-sdk-core';
 
 interface GroundImageStateProps {
     state: GroundImageState;
