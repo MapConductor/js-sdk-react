@@ -10,12 +10,14 @@ import {
   fromLatLng,
 } from '@mapconductor/js-sdk-core';
 
-interface PolylineStateProps {
+export interface PolylineStateProps {
     state: PolylineState;
+    points?: never;
+    bounds?: never;
 }
 
 /** Registers a single polyline. Mirrors `PolylineComponent.kt#Polyline(state)`. */
-export function Polyline({ state }: PolylineStateProps): null {
+function PolylineWithState({ state }: PolylineStateProps): null {
     const { polylineCollector } = useMapViewScope();
 
     useEffect(() => {
@@ -30,8 +32,7 @@ export function Polyline({ state }: PolylineStateProps): null {
     return null;
 }
 
-interface PolylinePropsExpanded {
-    points: GeoPoint[];
+interface PolylineCommonProps {
     id?: string | null;
     strokeColor?: string;
     strokeWidth?: number;
@@ -41,11 +42,48 @@ interface PolylinePropsExpanded {
     onClick?: OnPolylineEventHandler | null;
 }
 
+export interface PolylinePointsProps extends PolylineCommonProps {
+    state?: never;
+    points: GeoPoint[];
+    bounds?: never;
+}
+
+export interface PolylineBoundsProps extends PolylineCommonProps {
+    state?: never;
+    points?: never;
+    bounds: GeoRectBounds;
+}
+
+export type PolylineProps = PolylineStateProps | PolylinePointsProps | PolylineBoundsProps;
+
 /**
- * Convenience overload: creates a PolylineState from props, then registers it.
- * Mirrors `PolylineComponent.kt#Polyline(points, ...)`.
+ * Registers a single polyline. Mirrors `PolylineComponent.kt#Polyline(state)`,
+ * `PolylineComponent.kt#Polyline(points, ...)`, and
+ * `PolylineComponent.kt#Polyline(bounds, ...)`.
  */
-export function PolylineFromProps(props: PolylinePropsExpanded): React.ReactElement | null {
+export function Polyline(props: PolylineStateProps): null;
+export function Polyline(props: PolylinePointsProps): React.ReactElement | null;
+export function Polyline(props: PolylineBoundsProps): React.ReactElement | null;
+export function Polyline(props: PolylineProps): React.ReactElement | null {
+    if (isPolylinePointsProps(props)) {
+        return <PolylineFromPointsProps {...props} />;
+    }
+    if (isPolylineBoundsProps(props)) {
+        return <PolylineFromBoundsProps {...props} />;
+    }
+
+    return <PolylineWithState state={props.state} />;
+}
+
+function isPolylinePointsProps(props: PolylineProps): props is PolylinePointsProps {
+    return props.state === undefined && props.points !== undefined;
+}
+
+function isPolylineBoundsProps(props: PolylineProps): props is PolylineBoundsProps {
+    return props.state === undefined && props.bounds !== undefined;
+}
+
+function PolylineFromPointsProps(props: PolylinePointsProps): React.ReactElement | null {
     const stateRef = useRef<PolylineState | null>(null);
     if (!stateRef.current) {
         stateRef.current = createPolylineState({
@@ -66,27 +104,13 @@ export function PolylineFromProps(props: PolylinePropsExpanded): React.ReactElem
     useEffect(() => { state.strokeWidth = props.strokeWidth ?? 1; }, [state, props.strokeWidth]);
     useEffect(() => { state.geodesic = props.geodesic ?? false; }, [state, props.geodesic]);
     useEffect(() => { state.zIndex = props.zIndex ?? 0; }, [state, props.zIndex]);
+    useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
     useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);
 
-    return <Polyline state={state} />;
+    return <PolylineWithState state={state} />;
 }
 
-interface PolylineBoundsProps {
-    bounds: GeoRectBounds;
-    id?: string | null;
-    strokeColor?: string;
-    strokeWidth?: number;
-    geodesic?: boolean;
-    zIndex?: number;
-    extra?: Serializable | null;
-    onClick?: OnPolylineEventHandler | null;
-}
-
-/**
- * Draws a polyline forming the rectangle defined by `bounds`.
- * Mirrors `PolylineComponent.kt#Polyline(bounds, ...)`.
- */
-export function PolylineFromBounds({ bounds, ...rest }: PolylineBoundsProps): React.ReactElement | null {
+function PolylineFromBoundsProps({ bounds, ...rest }: PolylineBoundsProps): React.ReactElement | null {
     const ne = bounds.northEast;
     const sw = bounds.southWest;
     if (!ne || !sw) return null;
@@ -99,5 +123,5 @@ export function PolylineFromBounds({ bounds, ...rest }: PolylineBoundsProps): Re
         ne,
     ];
 
-    return <PolylineFromProps points={points} {...rest} />;
+    return <PolylineFromPointsProps points={points} {...rest} />;
 }

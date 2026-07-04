@@ -11,12 +11,14 @@ import {
   fromLatLng,
 } from '@mapconductor/js-sdk-core';
 
-interface PolygonStateProps {
+export interface PolygonStateProps {
     state: PolygonState;
+    points?: never;
+    bounds?: never;
 }
 
 /** Registers a single polygon. Mirrors `PolygonComponent.kt#Polygon(state)`. */
-export function Polygon({ state }: PolygonStateProps): null {
+function PolygonWithState({ state }: PolygonStateProps): null {
     const { polygonCollector } = useMapViewScope();
 
     useEffect(() => {
@@ -32,9 +34,7 @@ export function Polygon({ state }: PolygonStateProps): null {
     return null;
 }
 
-interface PolygonPropsExpanded {
-    points: GeoPoint[];
-    holes?: GeoPoint[][];
+interface PolygonCommonProps {
     id?: string | null;
     strokeColor?: string;
     strokeWidth?: number;
@@ -45,11 +45,50 @@ interface PolygonPropsExpanded {
     onClick?: OnPolygonEventHandler | null;
 }
 
+export interface PolygonPointsProps extends PolygonCommonProps {
+    state?: never;
+    points: GeoPoint[];
+    holes?: GeoPoint[][];
+    bounds?: never;
+}
+
+export interface PolygonBoundsProps extends PolygonCommonProps {
+    state?: never;
+    points?: never;
+    holes?: never;
+    bounds: GeoRectBounds;
+}
+
+export type PolygonProps = PolygonStateProps | PolygonPointsProps | PolygonBoundsProps;
+
 /**
- * Convenience overload: creates a PolygonState from props, then registers it.
- * Mirrors `PolygonComponent.kt#Polygon(points, ...)`.
+ * Registers a single polygon. Mirrors `PolygonComponent.kt#Polygon(state)`,
+ * `PolygonComponent.kt#Polygon(points, ...)`, and
+ * `PolygonComponent.kt#Polygon(bounds, ...)`.
  */
-export function PolygonFromProps(props: PolygonPropsExpanded): React.ReactElement | null {
+export function Polygon(props: PolygonStateProps): null;
+export function Polygon(props: PolygonPointsProps): React.ReactElement | null;
+export function Polygon(props: PolygonBoundsProps): React.ReactElement | null;
+export function Polygon(props: PolygonProps): React.ReactElement | null {
+    if (isPolygonPointsProps(props)) {
+        return <PolygonFromPointsProps {...props} />;
+    }
+    if (isPolygonBoundsProps(props)) {
+        return <PolygonFromBoundsProps {...props} />;
+    }
+
+    return <PolygonWithState state={props.state} />;
+}
+
+function isPolygonPointsProps(props: PolygonProps): props is PolygonPointsProps {
+    return props.state === undefined && props.points !== undefined;
+}
+
+function isPolygonBoundsProps(props: PolygonProps): props is PolygonBoundsProps {
+    return props.state === undefined && props.bounds !== undefined;
+}
+
+function PolygonFromPointsProps(props: PolygonPointsProps): React.ReactElement | null {
     const stateRef = useRef<PolygonState | null>(null);
     if (!stateRef.current) {
         stateRef.current = createPolygonState({
@@ -74,28 +113,13 @@ export function PolygonFromProps(props: PolygonPropsExpanded): React.ReactElemen
     useEffect(() => { state.fillColor = props.fillColor ?? 'transparent'; }, [state, props.fillColor]);
     useEffect(() => { state.geodesic = props.geodesic ?? false; }, [state, props.geodesic]);
     useEffect(() => { state.zIndex = props.zIndex ?? 0; }, [state, props.zIndex]);
+    useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
     useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);
 
-    return <Polygon state={state} />;
+    return <PolygonWithState state={state} />;
 }
 
-interface PolygonBoundsProps {
-    bounds: GeoRectBounds;
-    id?: string | null;
-    strokeColor?: string;
-    strokeWidth?: number;
-    fillColor?: string;
-    geodesic?: boolean;
-    zIndex?: number;
-    extra?: Serializable | null;
-    onClick?: OnPolygonEventHandler | null;
-}
-
-/**
- * Draws a polygon following the rectangle defined by `bounds`.
- * Mirrors `PolygonComponent.kt#Polygon(bounds, ...)`.
- */
-export function PolygonFromBounds({ bounds, ...rest }: PolygonBoundsProps): React.ReactElement | null {
+function PolygonFromBoundsProps({ bounds, ...rest }: PolygonBoundsProps): React.ReactElement | null {
     const ne = bounds.northEast;
     const sw = bounds.southWest;
     if (!ne || !sw) return null;
@@ -108,5 +132,5 @@ export function PolygonFromBounds({ bounds, ...rest }: PolygonBoundsProps): Reac
         ne,
     ];
 
-    return <PolygonFromProps points={points} {...rest} />;
+    return <PolygonFromPointsProps points={points} {...rest} />;
 }

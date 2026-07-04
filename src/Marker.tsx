@@ -10,12 +10,13 @@ import {
   type GeoPoint,
 } from '@mapconductor/js-sdk-core';
 
-interface MarkerStateProps {
+export interface MarkerStateProps {
     state: MarkerState;
+    position?: never;
 }
 
 /** Registers a single marker. Mirrors `MarkerCompose.kt#Marker(state)`. */
-export function Marker({ state }: MarkerStateProps): null {
+function MarkerWithState({ state }: MarkerStateProps): null {
     const { markerCollector } = useMapViewScope();
 
     useEffect(() => {
@@ -86,10 +87,11 @@ function syncMarkerState(target: MarkerState, source: MarkerState): void {
     if (target.onAnimateEnd !== source.onAnimateEnd) target.onAnimateEnd = source.onAnimateEnd;
 }
 
-interface MarkerPropsExpanded {
+export interface MarkerPositionProps {
+    state?: never;
     position: GeoPoint;
     id?: string | null;
-    zIndex?: number;
+    zIndex?: number | null;
     clickable?: boolean;
     draggable?: boolean;
     icon?: MarkerIcon | null;
@@ -103,17 +105,37 @@ interface MarkerPropsExpanded {
     onAnimateEnd?: OnMarkerEventHandler | null;
 }
 
+export type MarkerProps = MarkerStateProps | MarkerPositionProps;
+
 /**
- * Convenience overload: creates a MarkerState from props, then registers it.
+ * Registers a single marker. Mirrors `MarkerCompose.kt#Marker(state)` and
+ * `MarkerCompose.kt#Marker(position, ...)`.
+ */
+export function Marker(props: MarkerStateProps): null;
+export function Marker(props: MarkerPositionProps): React.ReactElement | null;
+export function Marker(props: MarkerProps): React.ReactElement | null {
+    if (isMarkerPositionProps(props)) {
+        return <MarkerFromPositionProps {...props} />;
+    }
+
+    return <MarkerWithState state={props.state} />;
+}
+
+function isMarkerPositionProps(props: MarkerProps): props is MarkerPositionProps {
+    return props.state === undefined;
+}
+
+/**
+ * Convenience component: creates a MarkerState from props, then registers it.
  * Mirrors `MarkerCompose.kt#Marker(position, ...)`.
  */
-export function MarkerFromProps(props: MarkerPropsExpanded): React.ReactElement | null {
+function MarkerFromPositionProps(props: MarkerPositionProps): React.ReactElement | null {
     const stateRef = useRef<MarkerState | null>(null);
     if (!stateRef.current) {
         stateRef.current = createMarkerState({
             position: props.position,
             id: props.id,
-            zIndex: props.zIndex ?? 0,
+            zIndex: props.zIndex ?? null,
             clickable: props.clickable ?? true,
             draggable: props.draggable ?? false,
             icon: props.icon ?? null,
@@ -134,6 +156,8 @@ export function MarkerFromProps(props: MarkerPropsExpanded): React.ReactElement 
     useEffect(() => { state.setDraggable(props.draggable ?? false); }, [state, props.draggable]);
     useEffect(() => { state.setIcon(props.icon ?? null); }, [state, props.icon]);
     useEffect(() => { state.setZIndex(props.zIndex ?? 0); }, [state, props.zIndex]);
+    useEffect(() => { state.animation = props.animation ?? null; }, [state, props.animation]);
+    useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
     useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);
     useEffect(() => { state.onDragStart = props.onDragStart ?? null; }, [state, props.onDragStart]);
     useEffect(() => { state.onDrag = props.onDrag ?? null; }, [state, props.onDrag]);
@@ -141,5 +165,5 @@ export function MarkerFromProps(props: MarkerPropsExpanded): React.ReactElement 
     useEffect(() => { state.onAnimateStart = props.onAnimateStart ?? null; }, [state, props.onAnimateStart]);
     useEffect(() => { state.onAnimateEnd = props.onAnimateEnd ?? null; }, [state, props.onAnimateEnd]);
 
-    return <Marker state={state} />;
+    return <MarkerWithState state={state} />;
 }
