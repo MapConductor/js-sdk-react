@@ -23,7 +23,7 @@
   },
   "keywords": ["maps", "typescript", "react"],
   "author": "MapConductor",
-  "license": "MIT",
+  "license": "Apache2",
   "dependencies": {
     "@mapconductor/js-sdk-core": "workspace:*"
   },
