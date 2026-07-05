@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useMapViewScope } from './MapViewScope';
 import {
   createPolylineState,
@@ -84,28 +84,29 @@ function isPolylineBoundsProps(props: PolylineProps): props is PolylineBoundsPro
 }
 
 function PolylineFromPointsProps(props: PolylinePointsProps): React.ReactElement | null {
-    const stateRef = useRef<PolylineState | null>(null);
-    if (!stateRef.current) {
-        stateRef.current = createPolylineState({
-            points: props.points,
-            id: props.id,
-            strokeColor: props.strokeColor ?? '#000000',
-            strokeWidth: props.strokeWidth ?? 1,
-            geodesic: props.geodesic ?? false,
-            zIndex: props.zIndex ?? 0,
-            extra: props.extra ?? null,
-            onClick: props.onClick ?? null,
-        });
-    }
-    const state = stateRef.current;
-
-    useEffect(() => { state.points = props.points; }, [state, props.points]);
-    useEffect(() => { state.strokeColor = props.strokeColor ?? '#000000'; }, [state, props.strokeColor]);
-    useEffect(() => { state.strokeWidth = props.strokeWidth ?? 1; }, [state, props.strokeWidth]);
-    useEffect(() => { state.geodesic = props.geodesic ?? false; }, [state, props.geodesic]);
-    useEffect(() => { state.zIndex = props.zIndex ?? 0; }, [state, props.zIndex]);
-    useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
-    useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);
+    const state = useMemo(
+        () =>
+            createPolylineState({
+                points: props.points,
+                id: props.id,
+                strokeColor: props.strokeColor ?? '#000000',
+                strokeWidth: props.strokeWidth ?? 1,
+                geodesic: props.geodesic ?? false,
+                zIndex: props.zIndex ?? 0,
+                extra: props.extra ?? null,
+                onClick: props.onClick ?? null,
+            }),
+        [
+            props.points,
+            props.id,
+            props.strokeColor,
+            props.strokeWidth,
+            props.geodesic,
+            props.zIndex,
+            props.extra,
+            props.onClick,
+        ],
+    );
 
     return <PolylineWithState state={state} />;
 }
