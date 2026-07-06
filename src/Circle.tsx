@@ -8,12 +8,14 @@ import {
   type Serializable,
 } from '@mapconductor/js-sdk-core';
 
-interface CircleStateProps {
+export interface CircleStateProps {
     state: CircleState;
+    center?: never;
+    radiusMeters?: never;
 }
 
 /** Registers a single circle. Mirrors `CircleCompose.kt#Circle(state)`. */
-export function Circle({ state }: CircleStateProps): null {
+function CircleWithState({ state }: CircleStateProps): null {
     const { circleCollector } = useMapViewScope();
 
     useEffect(() => {
@@ -28,7 +30,8 @@ export function Circle({ state }: CircleStateProps): null {
     return null;
 }
 
-interface CirclePropsExpanded {
+export interface CirclePositionProps {
+    state?: never;
     center: GeoPoint;
     radiusMeters: number;
     id?: string | null;
@@ -42,11 +45,27 @@ interface CirclePropsExpanded {
     onClick?: OnCircleEventHandler | null;
 }
 
+export type CircleProps = CircleStateProps | CirclePositionProps;
+
 /**
- * Convenience overload: creates a CircleState from props, then registers it.
- * Mirrors `CircleCompose.kt#Circle(center, ...)`.
+ * Registers a single circle. Mirrors `CircleCompose.kt#Circle(state)` and
+ * `CircleCompose.kt#Circle(center, ...)`.
  */
-export function CircleFromProps(props: CirclePropsExpanded): React.ReactElement | null {
+export function Circle(props: CircleStateProps): null;
+export function Circle(props: CirclePositionProps): React.ReactElement | null;
+export function Circle(props: CircleProps): React.ReactElement | null {
+    if (isCirclePositionProps(props)) {
+        return <CircleFromPositionProps {...props} />;
+    }
+
+    return <CircleWithState state={props.state} />;
+}
+
+function isCirclePositionProps(props: CircleProps): props is CirclePositionProps {
+    return props.state === undefined;
+}
+
+function CircleFromPositionProps(props: CirclePositionProps): React.ReactElement | null {
     const stateRef = useRef<CircleState | null>(null);
     if (!stateRef.current) {
         stateRef.current = createCircleState({
@@ -73,7 +92,8 @@ export function CircleFromProps(props: CirclePropsExpanded): React.ReactElement 
     useEffect(() => { state.zIndex = props.zIndex ?? null; }, [state, props.zIndex]);
     useEffect(() => { state.geodesic = props.geodesic ?? true; }, [state, props.geodesic]);
     useEffect(() => { state.clickable = props.clickable ?? true; }, [state, props.clickable]);
+    useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
     useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);
 
-    return <Circle state={state} />;
+    return <CircleWithState state={state} />;
 }

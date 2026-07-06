@@ -8,12 +8,14 @@ import {
   type Serializable,
 } from '@mapconductor/js-sdk-core';
 
-interface GroundImageStateProps {
+export interface GroundImageStateProps {
     state: GroundImageState;
+    bounds?: never;
+    imageUrl?: never;
 }
 
 /** Registers a ground image overlay. Mirrors `GroundImageComponent.kt#GroundImage(state)`. */
-export function GroundImage({ state }: GroundImageStateProps): null {
+function GroundImageWithState({ state }: GroundImageStateProps): null {
     const { groundImageCollector } = useMapViewScope();
 
     useEffect(() => {
@@ -28,7 +30,8 @@ export function GroundImage({ state }: GroundImageStateProps): null {
     return null;
 }
 
-interface GroundImagePropsExpanded {
+export interface GroundImageBoundsProps {
+    state?: never;
     bounds: GeoRectBounds;
     imageUrl: string;
     opacity?: number;
@@ -39,10 +42,27 @@ interface GroundImagePropsExpanded {
 }
 
 /**
- * Convenience overload: creates a GroundImageState from props, then registers it.
- * Mirrors `GroundImageComponent.kt#GroundImage(bounds, image, ...)` (web port uses imageUrl instead of Drawable).
+ * Registers a ground image overlay. Mirrors
+ * `GroundImageComponent.kt#GroundImage(state)` and
+ * `GroundImageComponent.kt#GroundImage(bounds, image, ...)` (web port uses imageUrl instead of Drawable).
  */
-export function GroundImageFromProps(props: GroundImagePropsExpanded): React.ReactElement | null {
+export type GroundImageProps = GroundImageStateProps | GroundImageBoundsProps;
+
+export function GroundImage(props: GroundImageStateProps): null;
+export function GroundImage(props: GroundImageBoundsProps): React.ReactElement | null;
+export function GroundImage(props: GroundImageProps): React.ReactElement | null {
+    if (isGroundImageBoundsProps(props)) {
+        return <GroundImageFromBoundsProps {...props} />;
+    }
+
+    return <GroundImageWithState state={props.state} />;
+}
+
+function isGroundImageBoundsProps(props: GroundImageProps): props is GroundImageBoundsProps {
+    return props.state === undefined;
+}
+
+function GroundImageFromBoundsProps(props: GroundImageBoundsProps): React.ReactElement | null {
     const stateRef = useRef<GroundImageState | null>(null);
     if (!stateRef.current) {
         stateRef.current = createGroundImageState({
@@ -60,7 +80,9 @@ export function GroundImageFromProps(props: GroundImagePropsExpanded): React.Rea
     useEffect(() => { state.bounds = props.bounds; }, [state, props.bounds]);
     useEffect(() => { state.imageUrl = props.imageUrl; }, [state, props.imageUrl]);
     useEffect(() => { state.opacity = props.opacity ?? 0.5; }, [state, props.opacity]);
+    useEffect(() => { state.tileSize = props.tileSize ?? 256; }, [state, props.tileSize]);
+    useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
     useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);
 
-    return <GroundImage state={state} />;
+    return <GroundImageWithState state={state} />;
 }

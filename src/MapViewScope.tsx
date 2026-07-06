@@ -17,9 +17,11 @@ import {
   MapOverlayRegistry,
 } from '@mapconductor/js-sdk-core';
 import type { InfoBubbleEntry } from './info/InfoBubbleEntry';
+import { MarkerAnimationStore } from './marker/MarkerAnimationStore';
 
 export class MapViewScope {
     readonly markerCollector = new OverlayCollector<MarkerState>();
+    readonly markerAnimationStore = new MarkerAnimationStore();
     readonly circleCollector = new OverlayCollector<CircleState>();
     readonly polylineCollector = new OverlayCollector<PolylineState>();
     readonly polygonCollector = new OverlayCollector<PolygonState>();
