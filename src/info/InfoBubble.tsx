@@ -41,6 +41,7 @@ export function InfoBubble({
     useEffect(() => {
         const entry: InfoBubbleEntry = {
             id: marker.id,
+            markerId: marker.id,
             positionProvider: () => marker.position,
             icon: marker.icon,
             tailOffset: { x: 0.5, y: 1.0 },
@@ -94,6 +95,7 @@ export function InfoBubbleAtPosition({
     useEffect(() => {
         const entry: InfoBubbleEntry = {
             id,
+            markerId: null,
             positionProvider: () => position,
             icon: null,
             tailOffset: { x: 0.5, y: 1.0 },
@@ -122,6 +124,7 @@ export function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCus
     useEffect(() => {
         const entry: InfoBubbleEntry = {
             id: marker.id,
+            markerId: marker.id,
             positionProvider: () => marker.position,
             icon: marker.icon,
             tailOffset,
