@@ -3,8 +3,10 @@ import {
   MapOverlayRegistry,
   MarkerOverlay,
   OverlayCollector,
+  RasterLayerOverlay,
   type MapOverlayInterface,
   type MarkerState,
+  type RasterLayerState,
 } from '@mapconductor/js-sdk-core';
 import type { InfoBubbleEntry } from './info/InfoBubbleEntry';
 import { MarkerAnimationStore } from './marker/MarkerAnimationStore';
@@ -12,11 +14,15 @@ import { MarkerAnimationStore } from './marker/MarkerAnimationStore';
 export class MapViewScope {
   readonly markerCollector = new OverlayCollector<MarkerState>();
   readonly markerAnimationStore = new MarkerAnimationStore();
+  readonly rasterLayerCollector = new OverlayCollector<RasterLayerState>();
   readonly bubbleCollector = new OverlayCollector<InfoBubbleEntry>();
 
   buildRegistry(): MapOverlayRegistry {
     const registry = new MapOverlayRegistry();
     registry.register(new MarkerOverlay(this.markerCollector) as MapOverlayInterface<unknown>);
+    registry.register(
+      new RasterLayerOverlay(this.rasterLayerCollector) as MapOverlayInterface<unknown>
+    );
     return registry;
   }
 }
