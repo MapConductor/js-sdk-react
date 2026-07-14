@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "prefabPath": "/Users/masashi/.gradle/caches/modules-2/files-2.1/com.google.prefab/cli/2.1.0/aa32fec809c44fa531f01dcfb739b5b3304d3050/cli-2.1.0-all.jar",
+  "packages": [
+    "/Users/masashi/.gradle/caches/9.2.1/transforms/8a77d2ac955e900c0c83c43203d7e6b5/transformed/react-android-0.86.0-debug/prefab",
+    "/Users/masashi/.gradle/caches/9.2.1/transforms/2604e7cc6ba524fe17581d67dabddcd5/transformed/fbjni-0.7.0/prefab"
+  ]
+}

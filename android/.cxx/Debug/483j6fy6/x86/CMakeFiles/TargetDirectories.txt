@@ -1,0 +1,3 @@
+/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/x86/CMakeFiles/mapconductor_markerscale.dir
+/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/x86/CMakeFiles/edit_cache.dir
+/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/x86/CMakeFiles/rebuild_cache.dir

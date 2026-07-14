@@ -1,0 +1,10 @@
+# ninja log v5
+258	301	1784032605429402397	/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/build/intermediates/cxx/Debug/483j6fy6/obj/arm64-v8a/libmapconductor_markerscale.so	91ecb46f17dc8736
+0	257	1784032605384167042	CMakeFiles/mapconductor_markerscale.dir/MarkerScaleBridge.cpp.o	979d67feb32f691e
+1	457	1784032900843524479	CMakeFiles/mapconductor_markerscale.dir/MarkerScaleBridge.cpp.o	979d67feb32f691e
+1	339	1784032923028597751	CMakeFiles/mapconductor_markerscale.dir/OnLoad.cpp.o	b8da417a411508e8
+339	372	1784032923061595861	/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/build/intermediates/cxx/Debug/483j6fy6/obj/arm64-v8a/libmapconductor_markerscale.so	4acbf18b0a9ede20
+1	747	1784034319426154998	CMakeFiles/mapconductor_markerscale.dir/MarkerScaleBridge.cpp.o	979d67feb32f691e
+747	829	1784034319510087658	/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/build/intermediates/cxx/Debug/483j6fy6/obj/arm64-v8a/libmapconductor_markerscale.so	4acbf18b0a9ede20
+1	687	1784034765447273154	CMakeFiles/mapconductor_markerscale.dir/MarkerScaleBridge.cpp.o	979d67feb32f691e
+687	767	1784034765530154845	/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/build/intermediates/cxx/Debug/483j6fy6/obj/arm64-v8a/libmapconductor_markerscale.so	4acbf18b0a9ede20

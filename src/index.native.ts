@@ -8,6 +8,7 @@ export * from './RasterLayer.native';
 export * from './marker/MarkerAnimationStore';
 export * from './marker/ReactNativeImageIcon';
 export * from './marker/NativeMarkerBatch';
+export * from './marker/IconScaleBridge.native';
 export * from './info/InfoBubble.native';
 export * from './info/InfoBubbleEntry';
 export * from './info/InfoBubbleLayer.native';
