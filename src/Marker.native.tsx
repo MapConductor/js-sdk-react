@@ -46,23 +46,25 @@ export function Markers({ states }: MarkersProps): null {
   const stableStatesRef = useRef<Map<string, MarkerState>>(new Map());
 
   useEffect(() => {
-    const nextIds = new Set<string>();
-    const stableStates = states.map((state) => {
-      nextIds.add(state.id);
-      const stableState = stableStatesRef.current.get(state.id);
-      if (!stableState) {
-        stableStatesRef.current.set(state.id, state);
-        return state;
+    markerCollector.batchChanges(() => {
+      const nextIds = new Set<string>();
+      const stableStates = states.map((state) => {
+        nextIds.add(state.id);
+        const stableState = stableStatesRef.current.get(state.id);
+        if (!stableState) {
+          stableStatesRef.current.set(state.id, state);
+          return state;
+        }
+        syncMarkerState(stableState, state);
+        return stableState;
+      });
+
+      for (const id of stableStatesRef.current.keys()) {
+        if (!nextIds.has(id)) stableStatesRef.current.delete(id);
       }
-      syncMarkerState(stableState, state);
-      return stableState;
+
+      markerCollector.replaceAll(stableStates);
     });
-
-    for (const id of stableStatesRef.current.keys()) {
-      if (!nextIds.has(id)) stableStatesRef.current.delete(id);
-    }
-
-    markerCollector.replaceAll(stableStates);
   }, [states, markerCollector]);
 
   useEffect(
