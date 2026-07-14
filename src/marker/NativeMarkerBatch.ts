@@ -1,4 +1,4 @@
-import type { MarkerState } from '@mapconductor/js-sdk-core';
+import type { MarkerIcon, MarkerState } from '@mapconductor/js-sdk-core';
 import { markerIconToNative, type NativeMarkerIconPayload } from './ReactNativeImageIcon';
 
 /**
@@ -15,15 +15,44 @@ export interface NativeMarkerBatchPayload {
   clickable: boolean[];
   draggable: boolean[];
   zIndex: number[];
-  /** Index into `icons`, or -1 when the marker has no icon. */
+  /** Index into the shared composition registry (or local `icons`), or -1 for no icon. */
   iconIndex: number[];
   animation: Array<string | null>;
-  icons: NativeMarkerIconPayload[];
+  /** Present for standalone batches; omitted when a composition-level registry is used. */
+  icons?: NativeMarkerIconPayload[];
 }
 
-export function encodeMarkerBatch(states: MarkerState[]): NativeMarkerBatchPayload {
-  const icons: NativeMarkerIconPayload[] = [];
-  const iconIndexByKey = new Map<string, number>();
+export interface NativeMarkerIconRegistry {
+  icons: NativeMarkerIconPayload[];
+  iconIndexByReference: Map<MarkerIcon, number>;
+  iconIndexByKey: Map<string, number>;
+}
+
+/** Matches the Android SDK's marker rendering batch size. */
+export const NATIVE_MARKER_BATCH_SIZE = 500;
+
+export function createNativeMarkerIconRegistry(states: MarkerState[]): NativeMarkerIconRegistry {
+  const registry: NativeMarkerIconRegistry = {
+    icons: [],
+    iconIndexByReference: new Map<MarkerIcon, number>(),
+    iconIndexByKey: new Map<string, number>(),
+  };
+
+  states.forEach((state) => {
+    nativeMarkerIconIndex(state.icon, registry, true);
+  });
+  return registry;
+}
+
+export function encodeMarkerBatch(
+  states: MarkerState[],
+  sharedRegistry?: NativeMarkerIconRegistry
+): NativeMarkerBatchPayload {
+  const registry: NativeMarkerIconRegistry = sharedRegistry ?? {
+    icons: [],
+    iconIndexByReference: new Map<MarkerIcon, number>(),
+    iconIndexByKey: new Map<string, number>(),
+  };
 
   const ids: string[] = new Array(states.length);
   const positions: number[] = new Array(states.length * 3);
@@ -43,20 +72,43 @@ export function encodeMarkerBatch(states: MarkerState[]): NativeMarkerBatchPaylo
     zIndex[i] = state.zIndex;
     animation[i] = state.animation;
 
-    const iconPayload = markerIconToNative(state.icon);
-    if (iconPayload == null) {
-      iconIndex[i] = -1;
-      return;
-    }
-    const key = JSON.stringify(iconPayload);
-    let index = iconIndexByKey.get(key);
-    if (index === undefined) {
-      index = icons.length;
-      icons.push(iconPayload);
-      iconIndexByKey.set(key, index);
-    }
-    iconIndex[i] = index;
+    iconIndex[i] = nativeMarkerIconIndex(state.icon, registry, !sharedRegistry);
   });
 
-  return { ids, positions, clickable, draggable, zIndex, iconIndex, animation, icons };
+  const payload: NativeMarkerBatchPayload = {
+    ids,
+    positions,
+    clickable,
+    draggable,
+    zIndex,
+    iconIndex,
+    animation,
+  };
+  if (!sharedRegistry) payload.icons = registry.icons;
+  return payload;
+}
+
+function nativeMarkerIconIndex(
+  markerIcon: MarkerIcon | null,
+  registry: NativeMarkerIconRegistry,
+  allowRegistration: boolean
+): number {
+  if (markerIcon != null) {
+    const referenceIndex = registry.iconIndexByReference.get(markerIcon);
+    if (referenceIndex !== undefined) return referenceIndex;
+  }
+
+  const iconPayload = markerIconToNative(markerIcon);
+  if (iconPayload == null) return -1;
+
+  const key = JSON.stringify(iconPayload);
+  let index = registry.iconIndexByKey.get(key);
+  if (index === undefined) {
+    if (!allowRegistration) return -1;
+    index = registry.icons.length;
+    registry.icons.push(iconPayload);
+    registry.iconIndexByKey.set(key, index);
+  }
+  if (markerIcon != null) registry.iconIndexByReference.set(markerIcon, index);
+  return index;
 }
