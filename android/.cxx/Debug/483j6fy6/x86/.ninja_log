@@ -1,4 +1,0 @@
-# ninja log v5
-1	361	1784140182446079611	CMakeFiles/mapconductor_markerscale.dir/OnLoad.cpp.o	560b6aa3b19d1c60
-0	450	1784140182534375614	CMakeFiles/mapconductor_markerscale.dir/MarkerScaleBridge.cpp.o	f23b2de35c803b59
-450	482	1784140182567242369	/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/build/intermediates/cxx/Debug/483j6fy6/obj/x86/libmapconductor_markerscale.so	77d402f034b0663d
