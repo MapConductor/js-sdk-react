@@ -4,6 +4,7 @@ export * from './MapViewScope.native';
 export * from './CollectAndRenderOverlays';
 export * from './native-extension/NativeMapExtension';
 export * from './Circle.native';
+export * from './GroundImage.native';
 export * from './Marker.native';
 export * from './Polygon.native';
 export * from './Polyline.native';

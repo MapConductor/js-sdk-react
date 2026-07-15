@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import {
   CircleOverlay,
+  GroundImageOverlay,
   MapOverlayRegistry,
   MarkerOverlay,
   OverlayCollector,
@@ -9,6 +10,7 @@ import {
   RasterLayerOverlay,
   type MapOverlayInterface,
   type CircleState,
+  type GroundImageState,
   type MarkerState,
   type PolygonState,
   type PolylineState,
@@ -19,6 +21,7 @@ import { MarkerAnimationStore } from './marker/MarkerAnimationStore';
 
 export class MapViewScope {
   readonly circleCollector = new OverlayCollector<CircleState>();
+  readonly groundImageCollector = new OverlayCollector<GroundImageState>();
   readonly markerCollector = new OverlayCollector<MarkerState>();
   readonly markerAnimationStore = new MarkerAnimationStore();
   readonly polygonCollector = new OverlayCollector<PolygonState>();
@@ -29,6 +32,9 @@ export class MapViewScope {
   buildRegistry(): MapOverlayRegistry {
     const registry = new MapOverlayRegistry();
     registry.register(new CircleOverlay(this.circleCollector) as MapOverlayInterface<unknown>);
+    registry.register(
+      new GroundImageOverlay(this.groundImageCollector) as MapOverlayInterface<unknown>
+    );
     registry.register(new MarkerOverlay(this.markerCollector) as MapOverlayInterface<unknown>);
     registry.register(
       new PolygonOverlay(this.polygonCollector) as MapOverlayInterface<unknown>
