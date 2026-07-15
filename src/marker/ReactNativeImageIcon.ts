@@ -1,5 +1,5 @@
 import type { MarkerIcon, Offset, BitmapIcon } from '@mapconductor/js-sdk-core';
-import { combineHash, hashBool, hashNum, hashStr } from '@mapconductor/js-sdk-core';
+import { ColorDefaultIcon, combineHash, hashBool, hashNum, hashStr } from '@mapconductor/js-sdk-core';
 import { Settings } from '@mapconductor/js-sdk-core';
 
 export interface ReactNativeImageIconOptions {
@@ -119,8 +119,9 @@ export function isReactNativeImageDefaultIcon(
 }
 
 export interface NativeMarkerIconPayload {
-  type: 'image' | 'imageDefault';
-  uri: string;
+  type: 'image' | 'imageDefault' | 'colorDefault';
+  uri?: string;
+  fillColor?: string;
   iconSize: number;
   scale: number;
   infoAnchor: Offset;
@@ -135,6 +136,22 @@ export interface NativeMarkerIconPayload {
 }
 
 export function markerIconToNative(icon: MarkerIcon | null): NativeMarkerIconPayload | null {
+  if (icon instanceof ColorDefaultIcon) {
+    return {
+      type: 'colorDefault',
+      fillColor: icon.fillColor,
+      strokeColor: icon.strokeColor,
+      strokeWidth: icon.strokeWidth,
+      scale: icon.scale,
+      label: icon.label,
+      labelTextColor: icon.labelTextColor,
+      labelTextSize: icon.labelTextSize,
+      labelStrokeColor: icon.labelStrokeColor,
+      infoAnchor: icon.infoAnchor,
+      iconSize: icon.iconSize,
+      debug: icon.debug,
+    };
+  }
   if (isReactNativeImageIcon(icon)) {
     return {
       type: 'image',

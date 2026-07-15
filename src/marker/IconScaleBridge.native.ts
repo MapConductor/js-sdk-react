@@ -40,16 +40,16 @@ export function registerIconScaleCallback(
     const result = state ? iconScaleCallback(state, zoom) : 1.0;
     if (loggedCalls < 20) {
       loggedCalls++;
-      console.log(
-        '[MarkerScaleBridge] JS callback invoked markerId=',
-        markerId,
-        'zoom=',
-        zoom,
-        'hasState=',
-        !!state,
-        '-> ',
-        result
-      );
+      // console.log(
+      //   '[MarkerScaleBridge] JS callback invoked markerId=',
+      //   markerId,
+      //   'zoom=',
+      //   zoom,
+      //   'hasState=',
+      //   !!state,
+      //   '-> ',
+      //   result
+      // );
     }
     return result;
   });

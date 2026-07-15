@@ -11,7 +11,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "arm64-v8a"
+			"value" : "x86_64"
 		},
 		{
 			"name" : "ANDROID_NDK",
@@ -75,7 +75,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "arm64-v8a"
+			"value" : "x86_64"
 		},
 		{
 			"name" : "CMAKE_ANDROID_NDK",
@@ -163,7 +163,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/arm64-v8a"
+			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/x86_64"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -236,6 +236,22 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "/Users/Shared/Android/sdk/cmake/3.22.1/bin/ctest"
+		},
+		{
+			"name" : "CMAKE_CXX_COMPILER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_AR",
@@ -364,6 +380,22 @@
 			],
 			"type" : "STRING",
 			"value" : "-latomic -lm"
+		},
+		{
+			"name" : "CMAKE_C_COMPILER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_C_COMPILER_AR",
@@ -647,7 +679,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/prefab/arm64-v8a/prefab"
+			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/prefab/x86_64/prefab"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -743,7 +775,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/build/intermediates/cxx/Debug/483j6fy6/obj/arm64-v8a"
+			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/build/intermediates/cxx/Debug/483j6fy6/obj/x86_64"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -1015,7 +1047,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/build/intermediates/cxx/Debug/483j6fy6/obj/arm64-v8a"
+			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/build/intermediates/cxx/Debug/483j6fy6/obj/x86_64"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1255,10 +1287,10 @@
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "The CMake toolchain file"
 				}
 			],
-			"type" : "UNINITIALIZED",
+			"type" : "FILEPATH",
 			"value" : "/Users/Shared/Android/sdk/ndk/27.0.12077973/build/cmake/android.toolchain.cmake"
 		},
 		{
@@ -1299,7 +1331,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/ReactAndroid"
+			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/prefab/x86_64/prefab/lib/x86_64-linux-android/cmake/ReactAndroid"
 		},
 		{
 			"name" : "fbjni_DIR",
@@ -1311,7 +1343,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/fbjni"
+			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/prefab/x86_64/prefab/lib/x86_64-linux-android/cmake/fbjni"
 		},
 		{
 			"name" : "mapconductor_markerscale_BINARY_DIR",
@@ -1323,7 +1355,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/arm64-v8a"
+			"value" : "/Users/masashi/mapconductor/react-sdk/js-sdk-react/android/.cxx/Debug/483j6fy6/x86_64"
 		},
 		{
 			"name" : "mapconductor_markerscale_IS_TOP_LEVEL",
