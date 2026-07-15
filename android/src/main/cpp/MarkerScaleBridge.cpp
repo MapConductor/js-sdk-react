@@ -31,7 +31,7 @@ void MarkerScaleBridge::install(
     callInvoker_ = std::move(callInvoker);
     callbacks_.clear();
   }
-  MSB_LOG("install: runtime=%p", (void *)&runtime);
+//  MSB_LOG("install: runtime=%p", (void *)&runtime);
 
   auto registerFn = Function::createFromHostFunction(
       runtime,
@@ -40,14 +40,14 @@ void MarkerScaleBridge::install(
       [this](Runtime &rt, const Value &, const Value *args, size_t count) -> Value {
         if (count < 2 || !args[0].isNumber() || !args[1].isObject() ||
             !args[1].getObject(rt).isFunction(rt)) {
-          MSB_LOG("register: rejected (bad args, count=%zu)", count);
+//          MSB_LOG("register: rejected (bad args, count=%zu)", count);
           return Value::undefined();
         }
         int viewId = static_cast<int>(args[0].getNumber());
         auto fn = std::make_shared<Function>(args[1].getObject(rt).getFunction(rt));
         std::lock_guard<std::mutex> lock(mutex_);
         callbacks_[viewId] = fn;
-        MSB_LOG("register: viewId=%d (callbacks now=%zu)", viewId, callbacks_.size());
+//        MSB_LOG("register: viewId=%d (callbacks now=%zu)", viewId, callbacks_.size());
         return Value::undefined();
       });
   runtime.global().setProperty(runtime, "__mapconductorRegisterIconScaleCallback", registerFn);
@@ -115,13 +115,13 @@ double MarkerScaleBridge::requestScale(
             String::createFromUtf8(*runtime, markerId),
             static_cast<double>(zoom));
         scale = result.isNumber() ? result.getNumber() : 1.0;
-        MSB_LOG(
-            "requestScale(async): viewId=%d markerId=%s zoom=%d -> %f",
-            viewId, markerId.c_str(), zoom, scale);
-      } else {
-        MSB_LOG(
-            "requestScale(async): no callback registered for viewId=%d (fn=%d runtime=%p)",
-            viewId, fn != nullptr, (void *)runtime);
+//        MSB_LOG(
+//            "requestScale(async): viewId=%d markerId=%s zoom=%d -> %f",
+//            viewId, markerId.c_str(), zoom, scale);
+//      } else {
+//        MSB_LOG(
+//            "requestScale(async): no callback registered for viewId=%d (fn=%d runtime=%p)",
+//            viewId, fn != nullptr, (void *)runtime);
       }
     } catch (std::exception &e) {
       MSB_LOG("requestScale(async): exception: %s", e.what());
