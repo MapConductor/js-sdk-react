@@ -7,6 +7,7 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.mapconductor.compose.MapViewScope
+import com.mapconductor.core.features.GeoPoint
 import java.util.concurrent.ConcurrentHashMap
 
 fun interface NativeMapExtensionEventSink {
@@ -20,6 +21,12 @@ fun interface NativeMapExtensionEventSink {
 interface NativeMapExtensionRenderer {
     /** Called on the React Native UI thread. Implementations may offload expensive decoding. */
     fun update(payload: ReadableMap?)
+
+    /** Called from the provider wrapper when the user clicks the map. */
+    fun onMapClick(
+        point: GeoPoint,
+        zoom: Double,
+    ): Boolean = false
 
     @Composable
     fun MapViewScope.Render()
@@ -105,6 +112,14 @@ class NativeMapExtensionHostState(
         entries.values.forEach { it.renderer.dispose() }
         entries.clear()
     }
+
+    fun dispatchMapClick(
+        point: GeoPoint,
+        zoom: Double,
+    ): Boolean =
+        entries.values.fold(false) { consumed, entry ->
+            entry.renderer.onMapClick(point, zoom) || consumed
+        }
 
     @Composable
     fun MapViewScope.RenderExtensions() {
