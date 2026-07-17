@@ -24,6 +24,8 @@
   },
   "files": [
     "android",
+    "ios",
+    "MapConductorReactNativeCore.podspec",
     "react-native.config.js",
     "dist"
   ],

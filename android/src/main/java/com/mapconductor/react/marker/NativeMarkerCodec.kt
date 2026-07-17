@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.facebook.react.bridge.ReadableMap
 import com.mapconductor.core.features.GeoPoint
+import com.mapconductor.core.marker.ColorDefaultIcon
 import com.mapconductor.core.marker.DrawableDefaultIcon
 import com.mapconductor.core.marker.ImageIcon
 import com.mapconductor.core.marker.MarkerAnimation
@@ -35,12 +36,23 @@ fun decodeNativeImageBitmap(
                         BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                     }
                 }
+                uri.startsWith("file:///android_res/") -> decodeDrawableResource(uri, context)
                 uri.startsWith("file:") || uri.startsWith("content:") || uri.startsWith("android.resource:") ->
                     context.contentResolver.openInputStream(Uri.parse(uri))?.use(BitmapFactory::decodeStream)
-                else -> null
+                else -> decodeDrawableResource(uri, context)
             }
         bitmap?.also { nativeBitmapCache[uri] = it }
     }
+
+private fun decodeDrawableResource(
+    uri: String,
+    context: Context,
+): Bitmap? {
+    val fileName = Uri.parse(uri).lastPathSegment ?: uri
+    val resourceName = fileName.substringBeforeLast('.')
+    val resourceId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
+    return if (resourceId == 0) null else BitmapFactory.decodeResource(context.resources, resourceId)
+}
 
 fun decodeNativeMarkerIcon(
     payload: ReadableMap?,
@@ -124,6 +136,7 @@ private data class NativeMarkerIcon(
     val anchor: Offset,
     val infoAnchor: Offset,
     val debug: Boolean,
+    val fillColor: Color,
     val strokeColor: Color,
     val strokeWidth: Float,
     val label: String?,
@@ -131,9 +144,25 @@ private data class NativeMarkerIcon(
     val labelTextSize: Float,
     val labelStrokeColor: Color,
 ) {
-    fun toMarkerIcon(context: Context): MarkerIconInterface? =
-        iconCache[this] ?: decodeBitmap(context)?.let { bitmap ->
-            val icon =
+    fun toMarkerIcon(context: Context): MarkerIconInterface? {
+        iconCache[this]?.let { return it }
+        val icon =
+            if (type == "colorDefault") {
+                ColorDefaultIcon(
+                    fillColor = fillColor,
+                    strokeColor = strokeColor,
+                    strokeWidth = strokeWidth.dp,
+                    scale = scale,
+                    label = label,
+                    labelTextColor = labelTextColor,
+                    labelTextSize = labelTextSize.sp,
+                    labelStrokeColor = labelStrokeColor,
+                    infoAnchor = infoAnchor,
+                    iconSize = iconSize.dp,
+                    debug = debug,
+                )
+            } else {
+                val bitmap = decodeBitmap(context) ?: return null
                 if (type == "imageDefault") {
                     DrawableDefaultIcon(
                         backgroundDrawable = BitmapDrawable(context.resources, bitmap),
@@ -158,9 +187,10 @@ private data class NativeMarkerIcon(
                         debug = debug,
                     )
                 }
-            iconCache[this] = icon
-            icon
-        }
+            }
+        iconCache[this] = icon
+        return icon
+    }
 
     private fun decodeBitmap(context: Context): Bitmap? =
         decodeNativeImageBitmap(uri, context)
@@ -171,8 +201,8 @@ private data class NativeMarkerIcon(
         fun fromReadableMap(map: ReadableMap?): NativeMarkerIcon? {
             if (map == null) return null
             val type = map.string("type") ?: return null
-            if (type != "image" && type != "imageDefault") return null
-            val uri = map.string("uri") ?: return null
+            if (type != "image" && type != "imageDefault" && type != "colorDefault") return null
+            val uri = if (type == "colorDefault") "" else map.string("uri") ?: return null
             return NativeMarkerIcon(
                 type = type,
                 uri = uri,
@@ -181,6 +211,7 @@ private data class NativeMarkerIcon(
                 anchor = map.offset("anchor", Offset(0.5f, 0.5f)),
                 infoAnchor = map.offset("infoAnchor", Offset(0.5f, 0.5f)),
                 debug = map.boolean("debug") ?: false,
+                fillColor = parseColor(map.string("fillColor"), Color.Red),
                 strokeColor = parseColor(map.string("strokeColor"), Color.White),
                 strokeWidth = (map.number("strokeWidth") ?: 1.0).toFloat(),
                 label = map.string("label"),

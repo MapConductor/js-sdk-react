@@ -7,6 +7,7 @@ export * from './Polygon';
 export * from './Polyline';
 export * from './GroundImage';
 export * from './RasterLayer';
+export * from './MapAttributionOverlay';
 export * from './hooks';
 export * from './info/InfoBubble';
 export * from './info/InfoBubbleOverlay';

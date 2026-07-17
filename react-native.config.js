@@ -6,6 +6,9 @@ module.exports = {
         packageImportPath: 'import com.mapconductor.react.MapConductorReactPackage;',
         packageInstance: 'new MapConductorReactPackage()',
       },
+      ios: {
+        sourceDir: './ios',
+      },
     },
   },
 };

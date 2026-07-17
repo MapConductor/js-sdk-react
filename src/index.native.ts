@@ -1,6 +1,7 @@
 export * from './map/MapViewBaseProps';
 export * from './MapContext';
 export * from './MapViewScope.native';
+export * from './MapAttributionOverlay.native';
 export * from './CollectAndRenderOverlays';
 export * from './native-extension/NativeMapExtension';
 export * from './Circle.native';
