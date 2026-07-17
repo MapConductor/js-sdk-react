@@ -974,6 +974,27 @@ public struct MarkerIconMetrics {
   @_Concurrency.MainActor @preconcurrency @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
+public struct AttributionRule : Swift.Hashable {
+  public let attribution: Swift.String
+  public let minZoom: Swift.Int?
+  public let maxZoom: Swift.Int?
+  public let bounds: MapConductorCore.GeoRectBounds?
+  public init(attribution: Swift.String, minZoom: Swift.Int? = nil, maxZoom: Swift.Int? = nil, bounds: MapConductorCore.GeoRectBounds? = nil)
+  public static func == (a: MapConductorCore.AttributionRule, b: MapConductorCore.AttributionRule) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public func resolveAttributionRules(_ rules: [MapConductorCore.AttributionRule], camera: any MapConductorCore.MapCameraPositionProtocol) -> [Swift.String]
+public func resolveMapAttributions(designRules: [MapConductorCore.AttributionRule], rasterLayers: [MapConductorCore.RasterLayer], camera: any MapConductorCore.MapCameraPositionProtocol) -> [Swift.String]
+@_Concurrency.MainActor @preconcurrency public struct MapAttributionOverlay : SwiftUICore.View {
+  @_Concurrency.MainActor @preconcurrency public init(designRules: [MapConductorCore.AttributionRule], rasterLayers: [MapConductorCore.RasterLayer], camera: any MapConductorCore.MapCameraPositionProtocol)
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
+    get
+  }
+  public typealias Body = @_opaqueReturnTypeOf("$s16MapConductorCore0A18AttributionOverlayV4bodyQrvp", 0) __
+}
 public struct VisibleRegion : Swift.Equatable, Swift.Hashable {
   public let bounds: MapConductorCore.GeoRectBounds
   public let nearLeft: MapConductorCore.GeoPoint?
@@ -1014,7 +1035,13 @@ final public class MapCameraPosition : MapConductorCore.MapCameraPositionProtoco
 public protocol MapDesignTypeProtocol {
   associatedtype Identifier
   var id: Self.Identifier { get }
+  var attributionRules: [MapConductorCore.AttributionRule] { get }
   func getValue() -> Self.Identifier
+}
+extension MapConductorCore.MapDesignTypeProtocol {
+  public var attributionRules: [MapConductorCore.AttributionRule] {
+    get
+  }
 }
 public protocol MapPaddingsProtocol {
   var top: Swift.Double { get }
@@ -1032,6 +1059,15 @@ open class MapPaddings : MapConductorCore.MapPaddingsProtocol {
   public static func from(paddings: any MapConductorCore.MapPaddingsProtocol) -> MapConductorCore.MapPaddings
   public func hashCode() -> Swift.Int
   @objc deinit
+}
+public enum MapProjection : Swift.Hashable, Swift.Sendable {
+  case mercator
+  case globe
+  public static func == (a: MapConductorCore.MapProjection, b: MapConductorCore.MapProjection) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
 }
 public protocol MapViewHolderProtocol {
   associatedtype ActualMapView
@@ -2263,7 +2299,7 @@ public enum TileScheme : Swift.String, Swift.Hashable {
   }
 }
 public enum RasterSource : Swift.Hashable {
-  case urlTemplate(template: Swift.String, tileSize: Swift.Int = RasterSource.defaultTileSize, minZoom: Swift.Int? = nil, maxZoom: Swift.Int? = nil, attribution: Swift.String? = nil, scheme: MapConductorCore.TileScheme = .XYZ)
+  case urlTemplate(template: Swift.String, tileSize: Swift.Int = RasterSource.defaultTileSize, minZoom: Swift.Int? = nil, maxZoom: Swift.Int? = nil, attributionRules: [MapConductorCore.AttributionRule] = [], scheme: MapConductorCore.TileScheme = .XYZ)
   case tileJson(url: Swift.String)
   case arcGisService(serviceUrl: Swift.String)
   public static let defaultTileSize: Swift.Int
@@ -2324,6 +2360,7 @@ extension MapConductorCore.Direction6 : Swift.Equatable {}
 extension MapConductorCore.Direction6 : Swift.Hashable {}
 extension MapConductorCore.DefaultInfoBubbleView : Swift.Sendable {}
 extension MapConductorCore.InfoBubbleOverlayCoordinator : Swift.Sendable {}
+extension MapConductorCore.MapAttributionOverlay : Swift.Sendable {}
 extension MapConductorCore.MarkerAnimationOverlayCoordinator : Swift.Sendable {}
 extension MapConductorCore.AnyMarkerOverlayRenderer : Swift.Sendable {}
 extension MapConductorCore.MarkerAnimation : Swift.Equatable {}

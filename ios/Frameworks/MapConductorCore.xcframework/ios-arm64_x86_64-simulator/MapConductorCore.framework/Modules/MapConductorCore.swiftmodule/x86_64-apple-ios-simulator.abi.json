@@ -29236,6 +29236,763 @@
       },
       {
         "kind": "TypeDecl",
+        "name": "AttributionRule",
+        "printedName": "AttributionRule",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "attribution",
+            "printedName": "attribution",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:16MapConductorCore15AttributionRuleV11attributionSSvp",
+            "mangledName": "$s16MapConductorCore15AttributionRuleV11attributionSSvp",
+            "moduleName": "MapConductorCore",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:16MapConductorCore15AttributionRuleV11attributionSSvg",
+                "mangledName": "$s16MapConductorCore15AttributionRuleV11attributionSSvg",
+                "moduleName": "MapConductorCore",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "minZoom",
+            "printedName": "minZoom",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.Int?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:16MapConductorCore15AttributionRuleV7minZoomSiSgvp",
+            "mangledName": "$s16MapConductorCore15AttributionRuleV7minZoomSiSgvp",
+            "moduleName": "MapConductorCore",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.Int?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int",
+                        "printedName": "Swift.Int",
+                        "usr": "s:Si"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:16MapConductorCore15AttributionRuleV7minZoomSiSgvg",
+                "mangledName": "$s16MapConductorCore15AttributionRuleV7minZoomSiSgvg",
+                "moduleName": "MapConductorCore",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "maxZoom",
+            "printedName": "maxZoom",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.Int?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:16MapConductorCore15AttributionRuleV7maxZoomSiSgvp",
+            "mangledName": "$s16MapConductorCore15AttributionRuleV7maxZoomSiSgvp",
+            "moduleName": "MapConductorCore",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.Int?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int",
+                        "printedName": "Swift.Int",
+                        "usr": "s:Si"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:16MapConductorCore15AttributionRuleV7maxZoomSiSgvg",
+                "mangledName": "$s16MapConductorCore15AttributionRuleV7maxZoomSiSgvg",
+                "moduleName": "MapConductorCore",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "bounds",
+            "printedName": "bounds",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "MapConductorCore.GeoRectBounds?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "GeoRectBounds",
+                    "printedName": "MapConductorCore.GeoRectBounds",
+                    "usr": "s:16MapConductorCore13GeoRectBoundsC"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:16MapConductorCore15AttributionRuleV6boundsAA13GeoRectBoundsCSgvp",
+            "mangledName": "$s16MapConductorCore15AttributionRuleV6boundsAA13GeoRectBoundsCSgvp",
+            "moduleName": "MapConductorCore",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "MapConductorCore.GeoRectBounds?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GeoRectBounds",
+                        "printedName": "MapConductorCore.GeoRectBounds",
+                        "usr": "s:16MapConductorCore13GeoRectBoundsC"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:16MapConductorCore15AttributionRuleV6boundsAA13GeoRectBoundsCSgvg",
+                "mangledName": "$s16MapConductorCore15AttributionRuleV6boundsAA13GeoRectBoundsCSgvg",
+                "moduleName": "MapConductorCore",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(attribution:minZoom:maxZoom:bounds:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AttributionRule",
+                "printedName": "MapConductorCore.AttributionRule",
+                "usr": "s:16MapConductorCore15AttributionRuleV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.Int?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "hasDefaultArg": true,
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.Int?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "hasDefaultArg": true,
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "MapConductorCore.GeoRectBounds?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "GeoRectBounds",
+                    "printedName": "MapConductorCore.GeoRectBounds",
+                    "usr": "s:16MapConductorCore13GeoRectBoundsC"
+                  }
+                ],
+                "hasDefaultArg": true,
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:16MapConductorCore15AttributionRuleV11attribution7minZoom03maxH06boundsACSS_SiSgAhA13GeoRectBoundsCSgtcfc",
+            "mangledName": "$s16MapConductorCore15AttributionRuleV11attribution7minZoom03maxH06boundsACSS_SiSgAhA13GeoRectBoundsCSgtcfc",
+            "moduleName": "MapConductorCore",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Var",
+            "name": "hashValue",
+            "printedName": "hashValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:16MapConductorCore15AttributionRuleV9hashValueSivp",
+            "mangledName": "$s16MapConductorCore15AttributionRuleV9hashValueSivp",
+            "moduleName": "MapConductorCore",
+            "implicit": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:16MapConductorCore15AttributionRuleV9hashValueSivg",
+                "mangledName": "$s16MapConductorCore15AttributionRuleV9hashValueSivg",
+                "moduleName": "MapConductorCore",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "hash",
+            "printedName": "hash(into:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Hasher",
+                "printedName": "Swift.Hasher",
+                "paramValueOwnership": "InOut",
+                "usr": "s:s6HasherV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:16MapConductorCore15AttributionRuleV4hash4intoys6HasherVz_tF",
+            "mangledName": "$s16MapConductorCore15AttributionRuleV4hash4intoys6HasherVz_tF",
+            "moduleName": "MapConductorCore",
+            "implicit": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "==",
+            "printedName": "==(_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "AttributionRule",
+                "printedName": "MapConductorCore.AttributionRule",
+                "usr": "s:16MapConductorCore15AttributionRuleV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "AttributionRule",
+                "printedName": "MapConductorCore.AttributionRule",
+                "usr": "s:16MapConductorCore15AttributionRuleV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:16MapConductorCore15AttributionRuleV2eeoiySbAC_ACtFZ",
+            "mangledName": "$s16MapConductorCore15AttributionRuleV2eeoiySbAC_ACtFZ",
+            "moduleName": "MapConductorCore",
+            "static": true,
+            "implicit": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Struct",
+        "usr": "s:16MapConductorCore15AttributionRuleV",
+        "mangledName": "$s16MapConductorCore15AttributionRuleV",
+        "moduleName": "MapConductorCore",
+        "declAttributes": [
+          "AccessControl"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          }
+        ]
+      },
+      {
+        "kind": "Function",
+        "name": "resolveAttributionRules",
+        "printedName": "resolveAttributionRules(_:camera:)",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "Array",
+            "printedName": "[Swift.String]",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "usr": "s:Sa"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "Array",
+            "printedName": "[MapConductorCore.AttributionRule]",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AttributionRule",
+                "printedName": "MapConductorCore.AttributionRule",
+                "usr": "s:16MapConductorCore15AttributionRuleV"
+              }
+            ],
+            "usr": "s:Sa"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "MapCameraPositionProtocol",
+            "printedName": "any MapConductorCore.MapCameraPositionProtocol",
+            "usr": "s:16MapConductorCore0A22CameraPositionProtocolP"
+          }
+        ],
+        "declKind": "Func",
+        "usr": "s:16MapConductorCore23resolveAttributionRules_6cameraSaySSGSayAA0E4RuleVG_AA0A22CameraPositionProtocol_ptF",
+        "mangledName": "$s16MapConductorCore23resolveAttributionRules_6cameraSaySSGSayAA0E4RuleVG_AA0A22CameraPositionProtocol_ptF",
+        "moduleName": "MapConductorCore",
+        "declAttributes": [
+          "AccessControl"
+        ],
+        "funcSelfKind": "NonMutating"
+      },
+      {
+        "kind": "Function",
+        "name": "resolveMapAttributions",
+        "printedName": "resolveMapAttributions(designRules:rasterLayers:camera:)",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "Array",
+            "printedName": "[Swift.String]",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "usr": "s:Sa"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "Array",
+            "printedName": "[MapConductorCore.AttributionRule]",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AttributionRule",
+                "printedName": "MapConductorCore.AttributionRule",
+                "usr": "s:16MapConductorCore15AttributionRuleV"
+              }
+            ],
+            "usr": "s:Sa"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "Array",
+            "printedName": "[MapConductorCore.RasterLayer]",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "RasterLayer",
+                "printedName": "MapConductorCore.RasterLayer",
+                "usr": "s:16MapConductorCore11RasterLayerV"
+              }
+            ],
+            "usr": "s:Sa"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "MapCameraPositionProtocol",
+            "printedName": "any MapConductorCore.MapCameraPositionProtocol",
+            "usr": "s:16MapConductorCore0A22CameraPositionProtocolP"
+          }
+        ],
+        "declKind": "Func",
+        "usr": "s:16MapConductorCore07resolveA12Attributions11designRules12rasterLayers6cameraSaySSGSayAA15AttributionRuleVG_SayAA11RasterLayerVGAA0A22CameraPositionProtocol_ptF",
+        "mangledName": "$s16MapConductorCore07resolveA12Attributions11designRules12rasterLayers6cameraSaySSGSayAA15AttributionRuleVG_SayAA11RasterLayerVGAA0A22CameraPositionProtocol_ptF",
+        "moduleName": "MapConductorCore",
+        "declAttributes": [
+          "AccessControl"
+        ],
+        "funcSelfKind": "NonMutating"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MapConductorCore"
+      },
+      {
+        "kind": "Import",
+        "name": "SwiftUI",
+        "printedName": "SwiftUI",
+        "declKind": "Import",
+        "moduleName": "MapConductorCore"
+      },
+      {
+        "kind": "Import",
+        "name": "UIKit",
+        "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "MapConductorCore"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MapAttributionOverlay",
+        "printedName": "MapAttributionOverlay",
+        "children": [
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(designRules:rasterLayers:camera:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MapAttributionOverlay",
+                "printedName": "MapConductorCore.MapAttributionOverlay",
+                "usr": "s:16MapConductorCore0A18AttributionOverlayV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[MapConductorCore.AttributionRule]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "AttributionRule",
+                    "printedName": "MapConductorCore.AttributionRule",
+                    "usr": "s:16MapConductorCore15AttributionRuleV"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[MapConductorCore.RasterLayer]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "RasterLayer",
+                    "printedName": "MapConductorCore.RasterLayer",
+                    "usr": "s:16MapConductorCore11RasterLayerV"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MapCameraPositionProtocol",
+                "printedName": "any MapConductorCore.MapCameraPositionProtocol",
+                "usr": "s:16MapConductorCore0A22CameraPositionProtocolP"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:16MapConductorCore0A18AttributionOverlayV11designRules12rasterLayers6cameraACSayAA0D4RuleVG_SayAA11RasterLayerVGAA0A22CameraPositionProtocol_ptcfc",
+            "mangledName": "$s16MapConductorCore0A18AttributionOverlayV11designRules12rasterLayers6cameraACSayAA0D4RuleVG_SayAA11RasterLayerVGAA0A22CameraPositionProtocol_ptcfc",
+            "moduleName": "MapConductorCore",
+            "declAttributes": [
+              "Preconcurrency",
+              "Custom",
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Var",
+            "name": "body",
+            "printedName": "body",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "OpaqueTypeArchetype",
+                "printedName": "some SwiftUI.View",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "View",
+                    "printedName": "SwiftUI.View",
+                    "usr": "s:7SwiftUI4ViewP"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:16MapConductorCore0A18AttributionOverlayV4bodyQrvp",
+            "mangledName": "$s16MapConductorCore0A18AttributionOverlayV4bodyQrvp",
+            "moduleName": "MapConductorCore",
+            "declAttributes": [
+              "Preconcurrency",
+              "Custom",
+              "AccessControl"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "OpaqueTypeArchetype",
+                    "printedName": "some SwiftUI.View",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "View",
+                        "printedName": "SwiftUI.View",
+                        "usr": "s:7SwiftUI4ViewP"
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:16MapConductorCore0A18AttributionOverlayV4bodyQrvg",
+                "mangledName": "$s16MapConductorCore0A18AttributionOverlayV4bodyQrvg",
+                "moduleName": "MapConductorCore",
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Struct",
+        "usr": "s:16MapConductorCore0A18AttributionOverlayV",
+        "mangledName": "$s16MapConductorCore0A18AttributionOverlayV",
+        "moduleName": "MapConductorCore",
+        "declAttributes": [
+          "Preconcurrency",
+          "Custom",
+          "AccessControl"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "View",
+            "printedName": "View",
+            "children": [
+              {
+                "kind": "TypeWitness",
+                "name": "Body",
+                "printedName": "Body",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "OpaqueTypeArchetype",
+                    "printedName": "some SwiftUI.View",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "View",
+                        "printedName": "SwiftUI.View",
+                        "usr": "s:7SwiftUI4ViewP"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "usr": "s:7SwiftUI4ViewP",
+            "mangledName": "$s7SwiftUI4ViewP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MapConductorCore"
+      },
+      {
+        "kind": "TypeDecl",
         "name": "VisibleRegion",
         "printedName": "VisibleRegion",
         "children": [
@@ -30764,6 +31521,64 @@
             ]
           },
           {
+            "kind": "Var",
+            "name": "attributionRules",
+            "printedName": "attributionRules",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[MapConductorCore.AttributionRule]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "AttributionRule",
+                    "printedName": "MapConductorCore.AttributionRule",
+                    "usr": "s:16MapConductorCore15AttributionRuleV"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:16MapConductorCore0A18DesignTypeProtocolP16attributionRulesSayAA15AttributionRuleVGvp",
+            "mangledName": "$s16MapConductorCore0A18DesignTypeProtocolP16attributionRulesSayAA15AttributionRuleVGvp",
+            "moduleName": "MapConductorCore",
+            "protocolReq": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Array",
+                    "printedName": "[MapConductorCore.AttributionRule]",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "AttributionRule",
+                        "printedName": "MapConductorCore.AttributionRule",
+                        "usr": "s:16MapConductorCore15AttributionRuleV"
+                      }
+                    ],
+                    "usr": "s:Sa"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:16MapConductorCore0A18DesignTypeProtocolP16attributionRulesSayAA15AttributionRuleVGvg",
+                "mangledName": "$s16MapConductorCore0A18DesignTypeProtocolP16attributionRulesSayAA15AttributionRuleVGvg",
+                "moduleName": "MapConductorCore",
+                "genericSig": "<τ_0_0 where τ_0_0 : MapConductorCore.MapDesignTypeProtocol>",
+                "sugared_genericSig": "<Self where Self : MapConductorCore.MapDesignTypeProtocol>",
+                "protocolReq": true,
+                "reqNewWitnessTableEntry": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
             "kind": "Function",
             "name": "getValue",
             "printedName": "getValue()",
@@ -30783,6 +31598,63 @@
             "protocolReq": true,
             "reqNewWitnessTableEntry": true,
             "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Var",
+            "name": "attributionRules",
+            "printedName": "attributionRules",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[MapConductorCore.AttributionRule]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "AttributionRule",
+                    "printedName": "MapConductorCore.AttributionRule",
+                    "usr": "s:16MapConductorCore15AttributionRuleV"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:16MapConductorCore0A18DesignTypeProtocolPAAE16attributionRulesSayAA15AttributionRuleVGvp",
+            "mangledName": "$s16MapConductorCore0A18DesignTypeProtocolPAAE16attributionRulesSayAA15AttributionRuleVGvp",
+            "moduleName": "MapConductorCore",
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Array",
+                    "printedName": "[MapConductorCore.AttributionRule]",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "AttributionRule",
+                        "printedName": "MapConductorCore.AttributionRule",
+                        "usr": "s:16MapConductorCore15AttributionRuleV"
+                      }
+                    ],
+                    "usr": "s:Sa"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:16MapConductorCore0A18DesignTypeProtocolPAAE16attributionRulesSayAA15AttributionRuleVGvg",
+                "mangledName": "$s16MapConductorCore0A18DesignTypeProtocolPAAE16attributionRulesSayAA15AttributionRuleVGvg",
+                "moduleName": "MapConductorCore",
+                "genericSig": "<τ_0_0 where τ_0_0 : MapConductorCore.MapDesignTypeProtocol>",
+                "sugared_genericSig": "<Self where Self : MapConductorCore.MapDesignTypeProtocol>",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
           }
         ],
         "declKind": "Protocol",
@@ -31391,6 +32263,235 @@
             "printedName": "Escapable",
             "usr": "s:s9EscapableP",
             "mangledName": "$ss9EscapableP"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MapProjection",
+        "printedName": "MapProjection",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "mercator",
+            "printedName": "mercator",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MapConductorCore.MapProjection.Type) -> MapConductorCore.MapProjection",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MapProjection",
+                    "printedName": "MapConductorCore.MapProjection",
+                    "usr": "s:16MapConductorCore0A10ProjectionO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MapConductorCore.MapProjection.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MapProjection",
+                        "printedName": "MapConductorCore.MapProjection",
+                        "usr": "s:16MapConductorCore0A10ProjectionO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:16MapConductorCore0A10ProjectionO8mercatoryA2CmF",
+            "mangledName": "$s16MapConductorCore0A10ProjectionO8mercatoryA2CmF",
+            "moduleName": "MapConductorCore"
+          },
+          {
+            "kind": "Var",
+            "name": "globe",
+            "printedName": "globe",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MapConductorCore.MapProjection.Type) -> MapConductorCore.MapProjection",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MapProjection",
+                    "printedName": "MapConductorCore.MapProjection",
+                    "usr": "s:16MapConductorCore0A10ProjectionO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MapConductorCore.MapProjection.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MapProjection",
+                        "printedName": "MapConductorCore.MapProjection",
+                        "usr": "s:16MapConductorCore0A10ProjectionO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:16MapConductorCore0A10ProjectionO5globeyA2CmF",
+            "mangledName": "$s16MapConductorCore0A10ProjectionO5globeyA2CmF",
+            "moduleName": "MapConductorCore"
+          },
+          {
+            "kind": "Function",
+            "name": "==",
+            "printedName": "==(_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MapProjection",
+                "printedName": "MapConductorCore.MapProjection",
+                "usr": "s:16MapConductorCore0A10ProjectionO"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MapProjection",
+                "printedName": "MapConductorCore.MapProjection",
+                "usr": "s:16MapConductorCore0A10ProjectionO"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:16MapConductorCore0A10ProjectionO2eeoiySbAC_ACtFZ",
+            "mangledName": "$s16MapConductorCore0A10ProjectionO2eeoiySbAC_ACtFZ",
+            "moduleName": "MapConductorCore",
+            "static": true,
+            "implicit": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Var",
+            "name": "hashValue",
+            "printedName": "hashValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:16MapConductorCore0A10ProjectionO9hashValueSivp",
+            "mangledName": "$s16MapConductorCore0A10ProjectionO9hashValueSivp",
+            "moduleName": "MapConductorCore",
+            "implicit": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:16MapConductorCore0A10ProjectionO9hashValueSivg",
+                "mangledName": "$s16MapConductorCore0A10ProjectionO9hashValueSivg",
+                "moduleName": "MapConductorCore",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "hash",
+            "printedName": "hash(into:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Hasher",
+                "printedName": "Swift.Hasher",
+                "paramValueOwnership": "InOut",
+                "usr": "s:s6HasherV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:16MapConductorCore0A10ProjectionO4hash4intoys6HasherVz_tF",
+            "mangledName": "$s16MapConductorCore0A10ProjectionO4hash4intoys6HasherVz_tF",
+            "moduleName": "MapConductorCore",
+            "implicit": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Enum",
+        "usr": "s:16MapConductorCore0A10ProjectionO",
+        "mangledName": "$s16MapConductorCore0A10ProjectionO",
+        "moduleName": "MapConductorCore",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "SendableMetatype",
+            "printedName": "SendableMetatype",
+            "usr": "s:s16SendableMetatypeP",
+            "mangledName": "$ss16SendableMetatypeP"
           }
         ]
       },
@@ -71400,12 +72501,12 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(MapConductorCore.RasterSource.Type) -> (Swift.String, Swift.Int, Swift.Int?, Swift.Int?, Swift.String?, MapConductorCore.TileScheme) -> MapConductorCore.RasterSource",
+                "printedName": "(MapConductorCore.RasterSource.Type) -> (Swift.String, Swift.Int, Swift.Int?, Swift.Int?, [MapConductorCore.AttributionRule], MapConductorCore.TileScheme) -> MapConductorCore.RasterSource",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Swift.String, Swift.Int, Swift.Int?, Swift.Int?, Swift.String?, MapConductorCore.TileScheme) -> MapConductorCore.RasterSource",
+                    "printedName": "(Swift.String, Swift.Int, Swift.Int?, Swift.Int?, [MapConductorCore.AttributionRule], MapConductorCore.TileScheme) -> MapConductorCore.RasterSource",
                     "children": [
                       {
                         "kind": "TypeNominal",
@@ -71416,7 +72517,7 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Tuple",
-                        "printedName": "(template: Swift.String, tileSize: Swift.Int, minZoom: Swift.Int?, maxZoom: Swift.Int?, attribution: Swift.String?, scheme: MapConductorCore.TileScheme)",
+                        "printedName": "(template: Swift.String, tileSize: Swift.Int, minZoom: Swift.Int?, maxZoom: Swift.Int?, attributionRules: [MapConductorCore.AttributionRule], scheme: MapConductorCore.TileScheme)",
                         "children": [
                           {
                             "kind": "TypeNominal",
@@ -71460,17 +72561,17 @@
                           },
                           {
                             "kind": "TypeNominal",
-                            "name": "Optional",
-                            "printedName": "Swift.String?",
+                            "name": "Array",
+                            "printedName": "[MapConductorCore.AttributionRule]",
                             "children": [
                               {
                                 "kind": "TypeNominal",
-                                "name": "String",
-                                "printedName": "Swift.String",
-                                "usr": "s:SS"
+                                "name": "AttributionRule",
+                                "printedName": "MapConductorCore.AttributionRule",
+                                "usr": "s:16MapConductorCore15AttributionRuleV"
                               }
                             ],
-                            "usr": "s:Sq"
+                            "usr": "s:Sa"
                           },
                           {
                             "kind": "TypeNominal",
@@ -71499,8 +72600,8 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:16MapConductorCore12RasterSourceO11urlTemplateyACSS_S2iSgAESSSgAA10TileSchemeOtcACmF",
-            "mangledName": "$s16MapConductorCore12RasterSourceO11urlTemplateyACSS_S2iSgAESSSgAA10TileSchemeOtcACmF",
+            "usr": "s:16MapConductorCore12RasterSourceO11urlTemplateyACSS_S2iSgAESayAA15AttributionRuleVGAA10TileSchemeOtcACmF",
+            "mangledName": "$s16MapConductorCore12RasterSourceO11urlTemplateyACSS_S2iSgAESayAA15AttributionRuleVGAA10TileSchemeOtcACmF",
             "moduleName": "MapConductorCore"
           },
           {
@@ -74345,8 +75446,15 @@
     },
     {
       "filePath": "\/Users\/masashi\/mapconductor\/ios-sdk\/ios-sdk-core\/Sources\/MapConductorCore\/raster\/RasterSource.swift",
+      "kind": "Array",
+      "offset": 315,
+      "length": 2,
+      "value": "[]"
+    },
+    {
+      "filePath": "\/Users\/masashi\/mapconductor\/ios-sdk\/ios-sdk-core\/Sources\/MapConductorCore\/raster\/RasterSource.swift",
       "kind": "IntegerLiteral",
-      "offset": 465,
+      "offset": 479,
       "length": 3,
       "value": "512"
     },
