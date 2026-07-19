@@ -1553,7 +1553,7 @@ final public class MarkerTileRenderer<ActualMarker> : MapConductorCore.TileProvi
   public init(markerManager: MapConductorCore.MarkerManager<ActualMarker>, tileSize: Swift.Int = 256, extraIconScale: Swift.Double = 1.0, cacheSizeBytes: Swift.Int = 8 * 1024 * 1024, debugTileOverlay: Swift.Bool = false, iconScaleCallback: ((MapConductorCore.MarkerState, Swift.Int) -> Swift.Double)? = nil)
   final public func invalidate()
   final public func clear()
-  final public func hitTest(screenPoint: CoreFoundation.CGPoint, markerIds: Swift.Set<Swift.String>, zoom: Swift.Int, tolerance: CoreFoundation.CGFloat = 14, renderScaleToScreenScale: CoreFoundation.CGFloat = UIScreen.main.scale, project: (MapConductorCore.GeoPoint) -> CoreFoundation.CGPoint?) -> MapConductorCore.MarkerState?
+  final public func hitTest(screenPoint: CoreFoundation.CGPoint, markerIds: Swift.Set<Swift.String>, zoom: Swift.Int, tolerance: CoreFoundation.CGFloat = 14, renderScaleToScreenScale: CoreFoundation.CGFloat = UIScreen.main.scale, unproject: (CoreFoundation.CGPoint) -> MapConductorCore.GeoPoint?, project: (MapConductorCore.GeoPoint) -> CoreFoundation.CGPoint?) -> MapConductorCore.MarkerState?
   final public func renderTile(request: MapConductorCore.TileRequest) -> Foundation.Data?
   @objc deinit
 }

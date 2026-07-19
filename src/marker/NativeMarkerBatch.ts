@@ -28,8 +28,8 @@ export interface NativeMarkerIconRegistry {
   iconIndexByKey: Map<string, number>;
 }
 
-/** Matches the Android SDK's marker rendering batch size. */
-export const NATIVE_MARKER_BATCH_SIZE = 1000;
+/** Keeps bridge decoding bounded and matches the native Android ingestion protocol. */
+export const NATIVE_MARKER_BATCH_SIZE = 500;
 
 export function createNativeMarkerIconRegistry(states: MarkerState[]): NativeMarkerIconRegistry {
   const registry: NativeMarkerIconRegistry = {

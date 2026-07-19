@@ -12,6 +12,10 @@ public protocol NativeMapExtensionRenderer: AnyObject {
     func update(payload: [String: Any])
     func dispose()
 
+    /// Called from the provider wrapper when the user clicks the map.
+    /// Return true when the extension consumed the click.
+    func onMapClick(_ point: GeoPoint, zoom: Double) -> Bool
+
     /// The overlay(s) this extension contributes, as a standalone `MapViewContent` fragment.
     ///
     /// Extension types like GeoJSON/heatmap wrap a `ViewBasedMapOverlay` (e.g. `GeoJSONLayer`)
@@ -20,6 +24,33 @@ public protocol NativeMapExtensionRenderer: AnyObject {
     /// `AnyView` isn't enough to pick those up. Implementations typically do:
     /// `MapViewContentBuilder.buildExpression(MyOverlay(...))`.
     func makeContent() -> MapViewContent
+}
+
+public extension NativeMapExtensionRenderer {
+    func onMapClick(_ point: GeoPoint, zoom: Double) -> Bool { false }
+}
+
+/// Merges every public `MapViewContent` contribution used by native extensions.
+/// Keep this shared so provider wrappers cannot omit strategy-backed overlays.
+public func mcMergeMapViewContent(_ contribution: MapViewContent, into content: inout MapViewContent) {
+    content.markers.append(contentsOf: contribution.markers)
+    content.infoBubbles.append(contentsOf: contribution.infoBubbles)
+    content.polylines.append(contentsOf: contribution.polylines)
+    content.polygons.append(contentsOf: contribution.polygons)
+    content.circles.append(contentsOf: contribution.circles)
+    content.groundImages.append(contentsOf: contribution.groundImages)
+    content.rasterLayers.append(contentsOf: contribution.rasterLayers)
+    content.markerRenderingMarkers.append(contentsOf: contribution.markerRenderingMarkers)
+    content.views.append(contentsOf: contribution.views)
+    content.polygonSyncHandlers.append(contentsOf: contribution.polygonSyncHandlers)
+    if contribution.markerRenderingStrategy != nil {
+        content.markerRenderingStrategy = contribution.markerRenderingStrategy
+    }
+    // markerTilingOptions is deliberately NOT merged. `MapViewContent()` starts at
+    // `.Default` (enabled == true), so an "unset" contribution is indistinguishable from a
+    // deliberately enabled one — merging it would clobber the provider root's options and
+    // silently drop `iconScaleCallback` (the MarkerScaleBridge JS callback). No extension
+    // contributes tiling options; only the provider views set them from the RN props.
 }
 
 public typealias NativeMapExtensionRendererFactory = (
@@ -86,14 +117,7 @@ public final class NativeMapExtensionHost: ObservableObject {
     public var content: MapViewContent {
         var merged = MapViewContent()
         for entry in entries.values {
-            let contribution = entry.renderer.makeContent()
-            merged.markers.append(contentsOf: contribution.markers)
-            merged.polylines.append(contentsOf: contribution.polylines)
-            merged.polygons.append(contentsOf: contribution.polygons)
-            merged.circles.append(contentsOf: contribution.circles)
-            merged.groundImages.append(contentsOf: contribution.groundImages)
-            merged.rasterLayers.append(contentsOf: contribution.rasterLayers)
-            merged.views.append(contentsOf: contribution.views)
+            mcMergeMapViewContent(entry.renderer.makeContent(), into: &merged)
         }
         return merged
     }
@@ -101,6 +125,10 @@ public final class NativeMapExtensionHost: ObservableObject {
     public func upsert(extensionId: String, type: String, payload: [String: Any]) {
         if let current = entries[extensionId], current.type == type {
             current.renderer.update(payload: payload)
+            // The renderer is reference-backed, so mutating it does not change the
+            // @Published dictionary by itself. Reassign the entry to invalidate the
+            // provider root and rebuild MapViewContent from the updated renderer.
+            entries[extensionId] = current
             return
         }
 
@@ -113,12 +141,20 @@ public final class NativeMapExtensionHost: ObservableObject {
             ])
             return
         }
-        entries[extensionId] = Entry(type: type, renderer: renderer)
+        // Populate the renderer before publishing it. Publishing an empty renderer first
+        // can let SwiftUI compose an empty extension and never observe the later mutation.
         renderer.update(payload: payload)
+        entries[extensionId] = Entry(type: type, renderer: renderer)
     }
 
     public func remove(extensionId: String) {
         entries.removeValue(forKey: extensionId)?.renderer.dispose()
+    }
+
+    public func dispatchMapClick(_ point: GeoPoint, zoom: Double) -> Bool {
+        entries.values.reduce(false) { consumed, entry in
+            entry.renderer.onMapClick(point, zoom: zoom) || consumed
+        }
     }
 
     public func dispose() {

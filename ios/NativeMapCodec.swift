@@ -80,6 +80,23 @@ public func mcGeoRectBounds(_ value: Any?) -> GeoRectBounds {
     return GeoRectBounds(southWest: mcGeoPoint(map?["southWest"]), northEast: mcGeoPoint(map?["northEast"]))
 }
 
+public func mcAttributionRules(_ value: Any?) -> [AttributionRule] {
+    (mcArray(value) ?? []).compactMap { item in
+        guard let map = mcMap(item), let attribution = mcString(map["attribution"]) else { return nil }
+        let bounds = mcMap(map["bounds"]).flatMap { boundsMap -> GeoRectBounds? in
+            guard let southWest = mcGeoPoint(boundsMap["southWest"]),
+                  let northEast = mcGeoPoint(boundsMap["northEast"]) else { return nil }
+            return GeoRectBounds(southWest: southWest, northEast: northEast)
+        }
+        return AttributionRule(
+            attribution: attribution,
+            minZoom: mcNumber(map["minZoom"])?.intValue,
+            maxZoom: mcNumber(map["maxZoom"])?.intValue,
+            bounds: bounds
+        )
+    }
+}
+
 public func mcCameraPosition(_ value: Any?) -> MapCameraPosition? {
     guard let map = mcMap(value), let point = mcGeoPoint(map["position"]) else { return nil }
     return MapCameraPosition(
@@ -132,9 +149,8 @@ private func mcVisibleRegionPayload(_ region: VisibleRegion) -> [String: Any] {
 
 private let mcImageCache = NSCache<NSString, UIImage>()
 
-/// Only `data:image` (base64) and local file paths are supported, matching Android's
-/// `decodeNativeImageBitmap` (which likewise only handles `data:image`, `file:`, `content:`,
-/// `android.resource:` and returns null for anything else, e.g. a bare http(s) URL).
+/// Supports base64 images, iOS asset-catalog names (`bundle://name`), and local file paths.
+/// Bare http(s) URLs are intentionally not loaded synchronously.
 public func mcLoadImage(uri: String) -> UIImage? {
     if let cached = mcImageCache.object(forKey: uri as NSString) { return cached }
     let image: UIImage?
@@ -144,6 +160,9 @@ public func mcLoadImage(uri: String) -> UIImage? {
         } else {
             image = nil
         }
+    } else if uri.hasPrefix("bundle://") {
+        let resourceName = String(uri.dropFirst("bundle://".count))
+        image = UIImage(named: resourceName)
     } else if uri.hasPrefix("file://"), let url = URL(string: uri) {
         image = UIImage(contentsOfFile: url.path)
     } else {
@@ -446,7 +465,7 @@ public func mcRasterSource(_ value: Any?) -> RasterSource? {
             tileSize: mcInt(map["tileSize"], default: RasterSource.defaultTileSize),
             minZoom: mcNumber(map["minZoom"])?.intValue,
             maxZoom: mcNumber(map["maxZoom"])?.intValue,
-            attribution: mcString(map["attribution"]),
+            attributionRules: mcAttributionRules(map["attributionRules"]),
             scheme: mcString(map["scheme"]) == "TMS" ? .TMS : .XYZ
         )
     case "TileJson":

@@ -50071,7 +50071,7 @@
           {
             "kind": "Function",
             "name": "hitTest",
-            "printedName": "hitTest(screenPoint:markerIds:zoom:tolerance:renderScaleToScreenScale:project:)",
+            "printedName": "hitTest(screenPoint:markerIds:zoom:tolerance:renderScaleToScreenScale:unproject:project:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -50130,6 +50130,36 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
+                "printedName": "(CoreFoundation.CGPoint) -> MapConductorCore.GeoPoint?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "MapConductorCore.GeoPoint?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GeoPoint",
+                        "printedName": "MapConductorCore.GeoPoint",
+                        "usr": "s:16MapConductorCore8GeoPointV"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CGPoint",
+                    "printedName": "CoreFoundation.CGPoint",
+                    "usr": "c:@S@CGPoint"
+                  }
+                ],
+                "typeAttributes": [
+                  "noescape"
+                ]
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
                 "printedName": "(MapConductorCore.GeoPoint) -> CoreFoundation.CGPoint?",
                 "children": [
                   {
@@ -50159,8 +50189,8 @@
               }
             ],
             "declKind": "Func",
-            "usr": "s:16MapConductorCore18MarkerTileRendererC7hitTest11screenPoint9markerIds4zoom9tolerance019renderScaleToScreenP07projectAA0D5StateCSgSo7CGPointV_ShySSGSi0C10Foundation7CGFloatVAsOSgAA03GeoJ0VXEtF",
-            "mangledName": "$s16MapConductorCore18MarkerTileRendererC7hitTest11screenPoint9markerIds4zoom9tolerance019renderScaleToScreenP07projectAA0D5StateCSgSo7CGPointV_ShySSGSi0C8Graphics7CGFloatVAsOSgAA03GeoJ0VXEtF",
+            "usr": "s:16MapConductorCore18MarkerTileRendererC7hitTest11screenPoint9markerIds4zoom9tolerance019renderScaleToScreenP09unproject7projectAA0D5StateCSgSo7CGPointV_ShySSGSi0C10Foundation7CGFloatVAtA03GeoJ0VSgAPXEAPSgAVXEtF",
+            "mangledName": "$s16MapConductorCore18MarkerTileRendererC7hitTest11screenPoint9markerIds4zoom9tolerance019renderScaleToScreenP09unproject7projectAA0D5StateCSgSo7CGPointV_ShySSGSi0C8Graphics7CGFloatVAtA03GeoJ0VSgAPXEAPSgAVXEtF",
             "moduleName": "MapConductorCore",
             "genericSig": "<τ_0_0>",
             "sugared_genericSig": "<ActualMarker>",
@@ -75069,7 +75099,7 @@
     {
       "filePath": "\/Users\/masashi\/mapconductor\/ios-sdk\/ios-sdk-core\/Sources\/MapConductorCore\/marker\/MarkerTileRenderer.swift",
       "kind": "FloatLiteral",
-      "offset": 13218,
+      "offset": 13262,
       "length": 11,
       "value": "85.05112878"
     },
