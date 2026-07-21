@@ -1,6 +1,6 @@
 {
   "name": "@mapconductor/js-sdk-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React bindings for MapConductor SDK",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -27,7 +27,9 @@
     "ios",
     "MapConductorReactNativeCore.podspec",
     "react-native.config.js",
-    "dist"
+    "dist",
+    "README.ja.md",
+    "README.es-419.md"
   ],
   "scripts": {
     "build": "tsup src/index.ts src/index.native.ts --format cjs,esm --dts",
@@ -35,7 +37,11 @@
     "clean": "rm -rf dist",
     "test": "echo 'No tests yet'"
   },
-  "keywords": ["maps", "typescript", "react"],
+  "keywords": [
+    "maps",
+    "typescript",
+    "react"
+  ],
   "author": "MapConductor",
   "license": "Apache2",
   "dependencies": {
