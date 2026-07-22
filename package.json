@@ -45,7 +45,7 @@
   "author": "MapConductor",
   "license": "Apache2",
   "dependencies": {
-    "@mapconductor/js-sdk-core": "0.1.0"
+    "@mapconductor/js-sdk-core": "0.1.1"
   },
   "peerDependencies": {
     "react": "^18.0.0",

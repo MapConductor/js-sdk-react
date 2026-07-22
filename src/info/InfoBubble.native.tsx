@@ -39,17 +39,25 @@ export function InfoBubble({
   );
 
   useEffect(() => {
-    const entry: InfoBubbleEntry = {
+    const buildEntry = (): InfoBubbleEntry => ({
       id: marker.id,
       markerId: marker.id,
       positionProvider: () => marker.position,
       icon: marker.icon,
       tailOffset: { x: 0.5, y: 1.0 },
       content,
-    };
-    bubbleCollector.add(entry);
+    });
+    bubbleCollector.add(buildEntry());
+    // marker.position/icon can change in place - e.g. a native drag callback mutates the same
+    // MarkerState object rather than creating a new one - which the [marker] effect dependency
+    // below won't observe. Re-adding on every fingerprint tick renotifies InfoBubbleLayer so it
+    // recomputes the bubble's screen position from the marker's current position.
+    const unsubscribe = marker.asObservable().subscribe(() => {
+      bubbleCollector.add(buildEntry());
+    });
     return () => {
-      bubbleCollector.remove(entry.id);
+      unsubscribe();
+      bubbleCollector.remove(marker.id);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marker]);
@@ -122,17 +130,23 @@ export function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCus
   const { bubbleCollector } = useMapViewScope();
 
   useEffect(() => {
-    const entry: InfoBubbleEntry = {
+    const buildEntry = (): InfoBubbleEntry => ({
       id: marker.id,
       markerId: marker.id,
       positionProvider: () => marker.position,
       icon: marker.icon,
       tailOffset,
       content: children,
-    };
-    bubbleCollector.add(entry);
+    });
+    bubbleCollector.add(buildEntry());
+    // See InfoBubble's identical effect above: re-add on every fingerprint tick so a native
+    // drag (which mutates the same MarkerState object in place) still updates the bubble.
+    const unsubscribe = marker.asObservable().subscribe(() => {
+      bubbleCollector.add(buildEntry());
+    });
     return () => {
-      bubbleCollector.remove(entry.id);
+      unsubscribe();
+      bubbleCollector.remove(marker.id);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marker, tailOffset]);

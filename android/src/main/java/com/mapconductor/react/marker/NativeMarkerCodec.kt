@@ -59,10 +59,70 @@ fun decodeNativeMarkerIcon(
     context: Context,
 ): MarkerIconInterface? = NativeMarkerIcon.fromReadableMap(payload)?.toMarkerIcon(context)
 
+/**
+ * Decodes a single `updateMarker()`/initial-mount payload (a plain `{id, position, ...}` map,
+ * as opposed to [decodeNativeMarkerBatch]'s structure-of-arrays batch shape). Mirrors iOS's
+ * `mcMarkerState`.
+ */
+fun decodeNativeMarkerState(
+    payload: ReadableMap?,
+    context: Context,
+    onMarkerEvent: ((eventName: String, marker: MarkerState) -> Unit)? = null,
+): MarkerState? {
+    if (payload == null) return null
+    val id = payload.string("id") ?: return null
+    val position = payload.map("position")?.toGeoPoint() ?: return null
+    val state =
+        MarkerState(
+            id = id,
+            position = position,
+            clickable = payload.boolean("clickable") ?: true,
+            draggable = payload.boolean("draggable") ?: false,
+            zIndex = payload.number("zIndex")?.toInt(),
+            icon = decodeNativeMarkerIcon(payload.map("icon"), context),
+            animation =
+                payload.string("animation")?.let { runCatching { MarkerAnimation.valueOf(it) }.getOrNull() },
+        )
+    state.onClick = { onMarkerEvent?.invoke("markerClick", it) }
+    state.onDragStart = { onMarkerEvent?.invoke("markerDragStart", it) }
+    state.onDrag = { onMarkerEvent?.invoke("markerDrag", it) }
+    state.onDragEnd = { onMarkerEvent?.invoke("markerDragEnd", it) }
+    state.onAnimateStart = { onMarkerEvent?.invoke("markerAnimateStart", it) }
+    state.onAnimateEnd = { onMarkerEvent?.invoke("markerAnimateEnd", it) }
+    return state
+}
+
+/** Applies an `updateMarker()` payload onto an existing [MarkerState] in place. Mirrors iOS's `mcApplyMarkerUpdate`. */
+fun applyNativeMarkerUpdate(
+    payload: ReadableMap,
+    context: Context,
+    state: MarkerState,
+) {
+    payload.map("position")?.toGeoPoint()?.let { state.position = it }
+    state.clickable = payload.boolean("clickable") ?: true
+    state.draggable = payload.boolean("draggable") ?: false
+    state.zIndex = payload.number("zIndex")?.toInt()
+    decodeNativeMarkerIcon(payload.map("icon"), context)?.let { state.icon = it }
+    payload.string("animation")?.let { name ->
+        runCatching { MarkerAnimation.valueOf(name) }.getOrNull()?.let(state::animate)
+    }
+}
+
+/**
+ * Decodes the compressed `compositionMarkers()`/`appendMarkerComposition()` batch payload
+ * (structure-of-arrays, referring to an icon dictionary by index). Mirrors iOS's
+ * `mcMarkerStatesFromBatch`.
+ *
+ * @param sharedIcons When set, used instead of re-decoding `payload["icons"]` - the
+ *   `beginMarkerComposition()`/`appendMarkerComposition()` wire protocol only sends the icon
+ *   dictionary once per composition generation (see `beginMarkerComposition`), with every
+ *   subsequent batch referencing it purely by `iconIndex`.
+ */
 fun decodeNativeMarkerBatch(
     payload: ReadableMap?,
     context: Context,
     previousStates: Map<String, MarkerState> = emptyMap(),
+    sharedIcons: List<MarkerIconInterface?>? = null,
     onMarkerEvent: ((eventName: String, marker: MarkerState) -> Unit)? = null,
 ): List<MarkerState> {
     if (payload == null) return emptyList()
@@ -73,13 +133,15 @@ fun decodeNativeMarkerBatch(
     val zIndexes = payload.getArray("zIndex")
     val iconIndexes = payload.getArray("iconIndex")
     val animations = payload.getArray("animation")
-    val iconPayloads = payload.getArray("icons")
     val icons =
-        if (iconPayloads == null) {
-            emptyList()
-        } else {
-            (0 until iconPayloads.size()).map { index ->
-                decodeNativeMarkerIcon(iconPayloads.getMap(index), context)
+        sharedIcons ?: run {
+            val iconPayloads = payload.getArray("icons")
+            if (iconPayloads == null) {
+                emptyList()
+            } else {
+                (0 until iconPayloads.size()).map { index ->
+                    decodeNativeMarkerIcon(iconPayloads.getMap(index), context)
+                }
             }
         }
 
@@ -123,6 +185,8 @@ fun decodeNativeMarkerBatch(
             state.onDragStart = { onMarkerEvent?.invoke("markerDragStart", it) }
             state.onDrag = { onMarkerEvent?.invoke("markerDrag", it) }
             state.onDragEnd = { onMarkerEvent?.invoke("markerDragEnd", it) }
+            state.onAnimateStart = { onMarkerEvent?.invoke("markerAnimateStart", it) }
+            state.onAnimateEnd = { onMarkerEvent?.invoke("markerAnimateEnd", it) }
             add(state)
         }
     }
@@ -226,6 +290,15 @@ private data class NativeMarkerIcon(
 
 private fun ReadableMap.string(key: String): String? =
     if (hasKey(key) && !isNull(key)) getString(key) else null
+
+private fun ReadableMap.map(key: String): ReadableMap? =
+    if (hasKey(key) && !isNull(key)) getMap(key) else null
+
+private fun ReadableMap.toGeoPoint(): GeoPoint? {
+    val latitude = number("latitude") ?: return null
+    val longitude = number("longitude") ?: return null
+    return GeoPoint(latitude = latitude, longitude = longitude, altitude = number("altitude") ?: 0.0)
+}
 
 private fun ReadableMap.number(key: String): Double? =
     if (hasKey(key) && !isNull(key)) getDouble(key) else null
