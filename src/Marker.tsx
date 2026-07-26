@@ -46,28 +46,42 @@ export function Markers({ states }: MarkersProps): null {
     useEffect(() => {
         markerCollector.batchChanges(() => {
             const nextIds = new Set<string>();
-            const stableStates = states.map((state) => {
+            const added: MarkerState[] = [];
+            for (const state of states) {
                 nextIds.add(state.id);
                 const stableState = stableStatesRef.current.get(state.id);
                 if (!stableState) {
                     stableStatesRef.current.set(state.id, state);
-                    return state;
+                    added.push(state);
+                } else {
+                    syncMarkerState(stableState, state);
                 }
-                syncMarkerState(stableState, state);
-                return stableState;
-            });
-
-            for (const id of stableStatesRef.current.keys()) {
-                if (!nextIds.has(id)) stableStatesRef.current.delete(id);
             }
 
-            markerCollector.replaceAll(stableStates);
+            // Remove only the ids this <Markers> instance owns. Using the
+            // additive applyDiff() instead of replaceAll()/clear() lets several
+            // <Markers>/<Marker> share one map's collector without wiping each
+            // other's markers — replaceAll() clears the whole collection, so the
+            // last <Markers> to run used to win and erase the rest.
+            const removedIds: string[] = [];
+            for (const id of stableStatesRef.current.keys()) {
+                if (!nextIds.has(id)) removedIds.push(id);
+            }
+            for (const id of removedIds) stableStatesRef.current.delete(id);
+
+            if (added.length > 0 || removedIds.length > 0) {
+                markerCollector.applyDiff(added, removedIds);
+            }
         });
     }, [states, markerCollector]);
 
-    useEffect(() => () => {
-        markerCollector.clear();
-        stableStatesRef.current.clear();
+    useEffect(() => {
+        const ownStates = stableStatesRef.current;
+        return () => {
+            // Remove only our own markers on unmount, never the whole collection.
+            markerCollector.applyDiff([], [...ownStates.keys()]);
+            ownStates.clear();
+        };
     }, [markerCollector]);
 
     return null;

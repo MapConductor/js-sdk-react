@@ -2,7 +2,7 @@ import { useEffect, useId, type ReactNode } from 'react';
 import { DrawInfoBubble } from './DrawInfoBubble';
 import { useMapViewScope } from '../MapViewScope';
 import type { InfoBubbleEntry } from './InfoBubbleEntry';
-import type { GeoPoint, MarkerState, Offset } from '@mapconductor/js-sdk-core';
+import { createDefaultIcon, type GeoPoint, type MarkerState, type Offset } from '@mapconductor/js-sdk-core';
 
 interface InfoBubbleProps {
     marker: MarkerState;
@@ -43,7 +43,11 @@ export function InfoBubble({
             id: marker.id,
             markerId: marker.id,
             positionProvider: () => marker.position,
-            icon: marker.icon,
+            // A marker with no explicit icon is rendered with the default pin
+            // (48px, anchored at its bottom tip). Resolve null to that same
+            // default so the bubble is offset by the pin's real size instead of
+            // collapsing to a zero-size icon and overlapping the marker.
+            icon: marker.icon ?? createDefaultIcon(),
             tailOffset: { x: 0.5, y: 1.0 },
             content,
         };
@@ -126,7 +130,11 @@ export function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCus
             id: marker.id,
             markerId: marker.id,
             positionProvider: () => marker.position,
-            icon: marker.icon,
+            // A marker with no explicit icon is rendered with the default pin
+            // (48px, anchored at its bottom tip). Resolve null to that same
+            // default so the bubble is offset by the pin's real size instead of
+            // collapsing to a zero-size icon and overlapping the marker.
+            icon: marker.icon ?? createDefaultIcon(),
             tailOffset,
             content: children,
         };
