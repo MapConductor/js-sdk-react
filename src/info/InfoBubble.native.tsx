@@ -4,89 +4,52 @@ import { useMapViewScope } from '../MapViewScope.native';
 import type { InfoBubbleEntry } from './InfoBubbleEntry';
 import type { GeoPoint, MarkerState, Offset } from '@mapconductor/js-sdk-core';
 
-interface InfoBubbleProps {
+interface InfoBubbleStyleProps {
+  bubbleColor?: string;
+  borderColor?: string;
+  contentPadding?: number;
+  cornerRadius?: number;
+  tailSize?: number;
+  children: ReactNode;
+}
+
+interface InfoBubbleMarkerProps extends InfoBubbleStyleProps {
+  /** Anchor the bubble to a marker (tracks the marker's position/icon). */
   marker: MarkerState;
-  bubbleColor?: string;
-  borderColor?: string;
-  contentPadding?: number;
-  cornerRadius?: number;
-  tailSize?: number;
-  children: ReactNode;
+  position?: never;
 }
 
-/** Draws a styled speech-bubble anchored to a marker. Mirrors `InfoBubbleCompose.kt#InfoBubble(marker, ...)`. */
-export function InfoBubble({
-  marker,
-  bubbleColor = '#ffffff',
-  borderColor = '#000000',
-  contentPadding = 8,
-  cornerRadius = 4,
-  tailSize = 8,
-  children,
-}: InfoBubbleProps) {
-  const { bubbleCollector } = useMapViewScope();
-
-  const content = (
-    <DrawInfoBubble
-      bubbleColor={bubbleColor}
-      borderColor={borderColor}
-      contentPadding={contentPadding}
-      cornerRadius={cornerRadius}
-      tailSize={tailSize}
-    >
-      {children}
-    </DrawInfoBubble>
-  );
-
-  useEffect(() => {
-    const buildEntry = (): InfoBubbleEntry => ({
-      id: marker.id,
-      markerId: marker.id,
-      positionProvider: () => marker.position,
-      icon: marker.icon,
-      tailOffset: { x: 0.5, y: 1.0 },
-      content,
-    });
-    bubbleCollector.add(buildEntry());
-    // marker.position/icon can change in place - e.g. a native drag callback mutates the same
-    // MarkerState object rather than creating a new one - which the [marker] effect dependency
-    // below won't observe. Re-adding on every fingerprint tick renotifies InfoBubbleLayer so it
-    // recomputes the bubble's screen position from the marker's current position.
-    const unsubscribe = marker.asObservable().subscribe(() => {
-      bubbleCollector.add(buildEntry());
-    });
-    return () => {
-      unsubscribe();
-      bubbleCollector.remove(marker.id);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [marker]);
-
-  return null;
-}
-
-interface InfoBubblePositionProps {
+interface InfoBubblePositionProps extends InfoBubbleStyleProps {
+  marker?: never;
+  /** Anchor the bubble to an arbitrary geo position. */
   position: GeoPoint;
-  bubbleColor?: string;
-  borderColor?: string;
-  contentPadding?: number;
-  cornerRadius?: number;
-  tailSize?: number;
-  children: ReactNode;
 }
 
-/** Draws a styled speech-bubble anchored to a geo position. Mirrors `InfoBubbleCompose.kt#InfoBubble(position, ...)`. */
-export function InfoBubbleAtPosition({
-  position,
-  bubbleColor = '#ffffff',
-  borderColor = '#000000',
-  contentPadding = 8,
-  cornerRadius = 4,
-  tailSize = 8,
-  children,
-}: InfoBubblePositionProps) {
+/**
+ * Props for {@link InfoBubble}: pass exactly one of `marker` or `position`.
+ * The two forms mirror Compose/iOS's overloaded `InfoBubble(marker:)` /
+ * `InfoBubble(position:)`.
+ */
+export type InfoBubbleProps = InfoBubbleMarkerProps | InfoBubblePositionProps;
+
+/**
+ * Draws a styled speech-bubble anchored to either a marker (`marker` prop) or an
+ * arbitrary geo position (`position` prop). Mirrors the overloaded
+ * `InfoBubbleCompose.kt#InfoBubble(marker, ...)` / `InfoBubble(position, ...)`.
+ */
+export function InfoBubble(props: InfoBubbleProps) {
+  const {
+    bubbleColor = '#ffffff',
+    borderColor = '#000000',
+    contentPadding = 8,
+    cornerRadius = 4,
+    tailSize = 8,
+    children,
+  } = props;
+  const marker = props.marker;
+  const position = props.position;
   const { bubbleCollector } = useMapViewScope();
-  const id = useId();
+  const generatedId = useId();
 
   const content = (
     <DrawInfoBubble
@@ -101,20 +64,43 @@ export function InfoBubbleAtPosition({
   );
 
   useEffect(() => {
+    if (marker) {
+      const buildEntry = (): InfoBubbleEntry => ({
+        id: marker.id,
+        markerId: marker.id,
+        positionProvider: () => marker.position,
+        icon: marker.icon,
+        tailOffset: { x: 0.5, y: 1.0 },
+        content,
+      });
+      bubbleCollector.add(buildEntry());
+      // marker.position/icon can change in place - e.g. a native drag callback mutates the same
+      // MarkerState object rather than creating a new one - which the [marker] effect dependency
+      // below won't observe. Re-adding on every fingerprint tick renotifies InfoBubbleLayer so it
+      // recomputes the bubble's screen position from the marker's current position.
+      const unsubscribe = marker.asObservable().subscribe(() => {
+        bubbleCollector.add(buildEntry());
+      });
+      return () => {
+        unsubscribe();
+        bubbleCollector.remove(marker.id);
+      };
+    }
+
     const entry: InfoBubbleEntry = {
-      id,
+      id: generatedId,
       markerId: null,
-      positionProvider: () => position,
+      positionProvider: () => position!,
       icon: null,
       tailOffset: { x: 0.5, y: 1.0 },
       content,
     };
     bubbleCollector.add(entry);
     return () => {
-      bubbleCollector.remove(id);
+      bubbleCollector.remove(generatedId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [position]);
+  }, [marker, position]);
 
   return null;
 }
