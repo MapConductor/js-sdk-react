@@ -4,7 +4,7 @@ import {
   type NativeMapExtensionDescriptor,
   type NativeMapExtensionEventHandler,
 } from '@mapconductor/js-sdk-core';
-import { MapContext } from '../MapContext';
+import { MapContext, mapContextInternal } from '../MapContext';
 
 export {
   isNativeMapExtensionCapable,
@@ -19,7 +19,7 @@ export function useNativeMapExtension(
   eventHandler?: NativeMapExtensionEventHandler | null,
 ): void {
   const mapContext = useContext(MapContext);
-  const controller = mapContext?.controller ?? null;
+  const controller = mapContext ? mapContextInternal(mapContext).controller : null;
   const isReady = mapContext?.isReady ?? false;
 
   useLayoutEffect(() => {

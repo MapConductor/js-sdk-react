@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { mapViewStateInternal } from '@mapconductor/js-sdk-core';
 import type {
   MapUISettings,
   MapViewControllerInterface,
@@ -26,7 +27,7 @@ export function useMapUISettings(
 
     const apply = (settings: MapUISettings) => controller.applyUISettings?.(settings);
     apply(state.uiSettings);
-    state.setUISettingsChangeListener(apply);
-    return () => state.setUISettingsChangeListener(null);
+    mapViewStateInternal(state).setUISettingsChangeListener(apply);
+    return () => mapViewStateInternal(state).setUISettingsChangeListener(null);
   }, [state, controller]);
 }
