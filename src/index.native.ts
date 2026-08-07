@@ -1,8 +1,8 @@
 export * from './map/MapViewBaseProps';
 export * from './MapContext';
-export * from './MapViewScope.native';
+// useMapViewScope は内部配線なので公開しない（`@mapconductor/js-sdk-react/internal`）。
+export { MapViewScope, MapViewScopeProvider } from './MapViewScope.native';
 export * from './MapAttributionOverlay.native';
-export * from './CollectAndRenderOverlays';
 export * from './native-extension/NativeMapExtension';
 export * from './Circle.native';
 export * from './GroundImage.native';
@@ -19,3 +19,4 @@ export * from './info/InfoBubbleEntry';
 export * from './info/InfoBubbleLayer.native';
 export * from './info/InfoBubbleOverlay.native';
 export * from './info/DrawInfoBubble.native';
+export * from './map/MapServiceRegistryContext';

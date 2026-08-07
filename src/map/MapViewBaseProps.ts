@@ -1,6 +1,7 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { ReactNode } from 'react';
 import type {
+  CameraRestriction,
   GeoPoint,
   MapCameraPosition,
   MapDesignTypeInterface,
@@ -23,4 +24,6 @@ export interface MapViewBaseProps<
   onCameraMoveStart?: OnCameraMoveHandler;
   onCameraMove?: OnCameraMoveHandler;
   onCameraMoveEnd?: OnCameraMoveHandler;
+  /** カメラの可動範囲を制限する。core の MapViewBaseProps と同じ意味。 */
+  cameraRestriction?: CameraRestriction | null;
 }

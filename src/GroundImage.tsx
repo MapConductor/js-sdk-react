@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useMapViewScope } from './MapViewScope';
 import {
   createGroundImageState,
+  GROUND_IMAGE_DEFAULT_TILE_SIZE,
   type GroundImageState,
   type OnGroundImageEventHandler,
   type GeoRectBounds,
@@ -80,7 +81,7 @@ function GroundImageFromBoundsProps(props: GroundImageBoundsProps): React.ReactE
     useEffect(() => { state.bounds = props.bounds; }, [state, props.bounds]);
     useEffect(() => { state.imageUrl = props.imageUrl; }, [state, props.imageUrl]);
     useEffect(() => { state.opacity = props.opacity ?? 0.5; }, [state, props.opacity]);
-    useEffect(() => { state.tileSize = props.tileSize ?? 256; }, [state, props.tileSize]);
+    useEffect(() => { state.tileSize = props.tileSize ?? GROUND_IMAGE_DEFAULT_TILE_SIZE; }, [state, props.tileSize]);
     useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
     useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);
 

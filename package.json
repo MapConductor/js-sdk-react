@@ -20,6 +20,16 @@
       "types": "./dist/index.native.d.ts",
       "import": "./dist/index.native.mjs",
       "require": "./dist/index.native.js"
+    },
+    "./internal": {
+      "react-native": {
+        "types": "./dist/internal.native.d.ts",
+        "import": "./dist/internal.native.mjs",
+        "require": "./dist/internal.native.js"
+      },
+      "types": "./dist/internal.d.ts",
+      "import": "./dist/internal.mjs",
+      "require": "./dist/internal.js"
     }
   },
   "files": [
@@ -32,8 +42,8 @@
     "README.es-419.md"
   ],
   "scripts": {
-    "build": "tsup src/index.ts src/index.native.ts --format cjs,esm --dts",
-    "dev": "tsup src/index.ts src/index.native.ts --format cjs,esm --watch",
+    "build": "tsup src/index.ts src/index.native.ts src/internal.ts src/internal.native.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts src/index.native.ts src/internal.ts src/internal.native.ts --format cjs,esm --watch",
     "clean": "rm -rf dist",
     "test": "echo 'No tests yet'"
   },

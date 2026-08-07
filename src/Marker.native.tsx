@@ -183,7 +183,7 @@ function MarkerFromPositionProps(props: MarkerPositionProps): React.ReactElement
     state.setDraggable(props.draggable ?? false);
   }, [state, props.draggable]);
   useEffect(() => {
-    state.setZIndex(props.zIndex ?? 0);
+    state.setZIndex(props.zIndex ?? null);
   }, [state, props.zIndex]);
   useEffect(() => {
     state.onClick = props.onClick ?? null;

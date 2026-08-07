@@ -171,7 +171,7 @@ function MarkerFromPositionProps(props: MarkerPositionProps): React.ReactElement
     useEffect(() => { state.setClickable(props.clickable ?? true); }, [state, props.clickable]);
     useEffect(() => { state.setDraggable(props.draggable ?? false); }, [state, props.draggable]);
     useEffect(() => { state.setIcon(props.icon ?? null); }, [state, props.icon]);
-    useEffect(() => { state.setZIndex(props.zIndex ?? 0); }, [state, props.zIndex]);
+    useEffect(() => { state.setZIndex(props.zIndex ?? null); }, [state, props.zIndex]);
     useEffect(() => { state.animation = props.animation ?? null; }, [state, props.animation]);
     useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
     useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import {
   createGroundImageState,
+  GROUND_IMAGE_DEFAULT_TILE_SIZE,
   type GeoRectBounds,
   type GroundImageState,
   type OnGroundImageEventHandler,
@@ -59,7 +60,7 @@ function GroundImageFromBoundsProps(
     stateRef.current = createGroundImageState({
       bounds: props.bounds,
       imageUrl: props.imageUrl,
-      opacity: props.opacity ?? 1,
+      opacity: props.opacity ?? 0.5,
       tileSize: props.tileSize,
       id: props.id,
       extra: props.extra ?? null,
@@ -75,11 +76,11 @@ function GroundImageFromBoundsProps(
     if (state.imageUrl !== props.imageUrl) state.imageUrl = props.imageUrl;
   }, [state, props.imageUrl]);
   useEffect(() => {
-    const opacity = props.opacity ?? 1;
+    const opacity = props.opacity ?? 0.5;
     if (state.opacity !== opacity) state.opacity = opacity;
   }, [state, props.opacity]);
   useEffect(() => {
-    const tileSize = props.tileSize ?? 256;
+    const tileSize = props.tileSize ?? GROUND_IMAGE_DEFAULT_TILE_SIZE;
     if (state.tileSize !== tileSize) state.tileSize = tileSize;
   }, [state, props.tileSize]);
   useEffect(() => {

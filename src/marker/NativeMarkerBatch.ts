@@ -69,7 +69,9 @@ export function encodeMarkerBatch(
     positions[i * 3 + 2] = state.position.altitude ?? 0;
     clickable[i] = state.clickable;
     draggable[i] = state.draggable;
-    zIndex[i] = state.zIndex;
+    // ネイティブ側は数値配列を要求するので、未指定(null)は 0 として送る。
+    // ネイティブ SDK 側の既定 z-order と一致する。
+    zIndex[i] = state.zIndex ?? 0;
     animation[i] = state.animation;
 
     iconIndex[i] = nativeMarkerIconIndex(state.icon, registry, !sharedRegistry);
