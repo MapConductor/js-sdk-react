@@ -40,12 +40,15 @@ public func mcMergeMapViewContent(_ contribution: MapViewContent, into content: 
     content.circles.append(contentsOf: contribution.circles)
     content.groundImages.append(contentsOf: contribution.groundImages)
     content.rasterLayers.append(contentsOf: contribution.rasterLayers)
-    content.markerRenderingMarkers.append(contentsOf: contribution.markerRenderingMarkers)
     content.views.append(contentsOf: contribution.views)
     content.polygonSyncHandlers.append(contentsOf: contribution.polygonSyncHandlers)
-    if contribution.markerRenderingStrategy != nil {
-        content.markerRenderingStrategy = contribution.markerRenderingStrategy
-    }
+    // Strategy-backed marker rendering is NOT carried on MapViewContent any more.
+    // `MapViewContent.markerRenderingStrategy` / `.markerRenderingMarkers` were removed in
+    // ios-sdk-core commit 9d908e4 ("feat: expand map controls, services, and geometry APIs",
+    // 2026-08-06); overlays such as `MarkerClusterGroup` now resolve
+    // `MarkerRenderingSupportKey` from `MapServiceRegistryScope.current` and call
+    // `support.connect(strategy:markers:)` themselves. Same arrangement as Android's
+    // `MarkerRenderingSupportKey` and react-sdk's `useMarkerRenderingSupport`.
     // markerTilingOptions is deliberately NOT merged. `MapViewContent()` starts at
     // `.Default` (enabled == true), so an "unset" contribution is indistinguishable from a
     // deliberately enabled one — merging it would clobber the provider root's options and

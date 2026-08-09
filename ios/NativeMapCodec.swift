@@ -398,13 +398,13 @@ public func mcPolygonState(_ value: Any?, onClick: @escaping (String, PolygonEve
     let holes = (mcArray(map["holes"]) ?? []).map(mcGeoPoints)
     return PolygonState(
         points: points,
+        holes: holes,
         id: id,
         strokeColor: mcColor(argb: map["strokeColor"], default: .black),
         strokeWidth: mcDouble(map["strokeWidth"], default: 1.0),
         fillColor: mcColor(argb: map["fillColor"], default: .clear),
         geodesic: mcBool(map["geodesic"], default: false),
         zIndex: mcInt(map["zIndex"], default: 0),
-        holes: holes,
         onClick: { onClick(id, $0) }
     )
 }
@@ -455,14 +455,14 @@ public func mcGroundImageStates(_ value: Any?, onClick: @escaping (String, Groun
     (mcArray(value) ?? []).compactMap { mcGroundImageState($0, onClick: onClick) }
 }
 
-public func mcRasterSource(_ value: Any?) -> RasterSource? {
+public func mcRasterLayerSource(_ value: Any?) -> RasterLayerSource? {
     guard let map = mcMap(value) else { return nil }
     switch mcString(map["type"]) {
     case "UrlTemplate":
         guard let template = mcString(map["template"]) else { return nil }
         return .urlTemplate(
             template: template,
-            tileSize: mcInt(map["tileSize"], default: RasterSource.defaultTileSize),
+            tileSize: mcInt(map["tileSize"], default: RasterLayerSource.defaultTileSize),
             minZoom: mcNumber(map["minZoom"])?.intValue,
             maxZoom: mcNumber(map["maxZoom"])?.intValue,
             attributionRules: mcAttributionRules(map["attributionRules"]),
@@ -480,7 +480,7 @@ public func mcRasterSource(_ value: Any?) -> RasterSource? {
 }
 
 public func mcRasterLayerState(_ value: Any?) -> RasterLayerState? {
-    guard let map = mcMap(value), let source = mcRasterSource(map["source"]) else { return nil }
+    guard let map = mcMap(value), let source = mcRasterLayerSource(map["source"]) else { return nil }
     let extraHeaders = (mcMap(map["extraHeaders"]))?.compactMapValues { $0 as? String }
     return RasterLayerState(
         source: source,
