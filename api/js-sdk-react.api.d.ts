@@ -255,7 +255,6 @@ interface InfoBubbleOverlayProps {
  * Positions its children at the correct screen coordinates relative to a map marker.
  * Mirrors `InfoBubbleOverlay` from `InfoWindowOverlay.kt`.
  */
-declare function InfoBubbleOverlay({ positionOffset, iconSize, iconOffset, infoAnchorOffset, tailOffset, children, style, }: InfoBubbleOverlayProps): React.JSX.Element;
 
 interface DrawInfoBubbleProps {
     bubbleColor?: string;

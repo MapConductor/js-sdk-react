@@ -1,3 +1,5 @@
+import { ScreenProjectionRequirement } from '@mapconductor/js-sdk-core';
+import { useMapServiceRegistry } from '../map/MapServiceRegistryContext';
 import { useEffect, useRef } from 'react';
 import {
   bounceInterpolation,
@@ -102,7 +104,17 @@ export function MarkerAnimationLayer({
   entries: MarkerAnimationOverlayEntry[];
   resolveScreenOffset: ResolveScreenOffset;
 }) {
-  if (entries.length === 0) return null;
+  // 同期投影を持たないと**宣言している**プロバイダではアニメーションを出せない。
+  // resolveScreenOffset が null を返すだけだと「画面外」と区別できず、
+  // 何のログも出ないまま無反応になる。ScreenProjectionRequirement を参照。
+  const registry = useMapServiceRegistry();
+  const canProject = ScreenProjectionRequirement.check(
+    registry,
+    'this provider',
+    'marker animation overlay',
+  );
+
+  if (entries.length === 0 || !canProject) return null;
 
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
