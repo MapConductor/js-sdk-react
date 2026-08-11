@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   position: {
     position: 'absolute',
     right: 4,
-    bottom: 24,
+    bottom: 0,
     zIndex: 1000,
     elevation: 6,
     maxWidth: '98%',

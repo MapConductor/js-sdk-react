@@ -49,7 +49,7 @@ export function MapAttributionOverlay({
       style={{
         position: 'absolute',
         right: 4,
-        bottom: 24,
+        bottom: 0,
         zIndex: 1000,
         maxWidth: 'calc(100% - 8px)',
         padding: '2px 5px',
