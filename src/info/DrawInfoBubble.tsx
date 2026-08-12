@@ -3,6 +3,7 @@ import { useRef, useState, useEffect, type ReactNode } from 'react';
 interface DrawInfoBubbleProps {
     bubbleColor?: string;
     borderColor?: string;
+    borderWidth?: number;
     contentPadding?: number;
     cornerRadius?: number;
     tailSize?: number;
@@ -40,6 +41,7 @@ function buildPath({
 export function DrawInfoBubble({
     bubbleColor = '#ffffff',
     borderColor = '#000000',
+    borderWidth = 2,
     contentPadding = 8,
     cornerRadius = 4,
     tailSize = 8,
@@ -79,7 +81,7 @@ export function DrawInfoBubble({
                     viewBox={`0 0 ${width} ${height}`}
                     aria-hidden="true"
                 >
-                    <path d={pathD} fill={bubbleColor} stroke={borderColor} strokeWidth={2} />
+                    <path d={pathD} fill={bubbleColor} stroke={borderColor} strokeWidth={borderWidth} />
                 </svg>
             )}
             <div

@@ -7,6 +7,8 @@ import { createDefaultIcon, type GeoPoint, type MarkerState, type Offset } from 
 interface InfoBubbleStyleProps {
     bubbleColor?: string;
     borderColor?: string;
+    /** 枠線の太さ(px)。android の borderWidth / ios の borderWidth と同一契約。 */
+    borderWidth?: number;
     contentPadding?: number;
     cornerRadius?: number;
     tailSize?: number;
@@ -41,6 +43,7 @@ export function InfoBubble(props: InfoBubbleProps) {
     const {
         bubbleColor = '#ffffff',
         borderColor = '#000000',
+        borderWidth = 2,
         contentPadding = 8,
         cornerRadius = 4,
         tailSize = 8,
@@ -55,6 +58,7 @@ export function InfoBubble(props: InfoBubbleProps) {
         <DrawInfoBubble
             bubbleColor={bubbleColor}
             borderColor={borderColor}
+            borderWidth={borderWidth}
             contentPadding={contentPadding}
             cornerRadius={cornerRadius}
             tailSize={tailSize}

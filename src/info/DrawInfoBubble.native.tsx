@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 interface DrawInfoBubbleProps {
   bubbleColor?: string;
   borderColor?: string;
+  borderWidth?: number;
   contentPadding?: number;
   cornerRadius?: number;
   tailSize?: number;
@@ -13,6 +14,7 @@ interface DrawInfoBubbleProps {
 export function DrawInfoBubble({
   bubbleColor = '#ffffff',
   borderColor = '#000000',
+  borderWidth = 1,
   contentPadding = 8,
   cornerRadius = 4,
   tailSize = 8,
@@ -26,6 +28,7 @@ export function DrawInfoBubble({
           {
             backgroundColor: bubbleColor,
             borderColor,
+            borderWidth,
             borderRadius: cornerRadius,
             padding: contentPadding,
           },
