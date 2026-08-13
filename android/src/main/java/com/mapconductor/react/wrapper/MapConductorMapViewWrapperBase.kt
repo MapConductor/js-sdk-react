@@ -131,6 +131,19 @@ abstract class MapConductorMapViewWrapperBase(context: Context) :
     private val events = MapViewWrapperEventEmitter(this)
     private val screenPositions = MapViewWrapperScreenPositions(events, mainCoroutine)
 
+    // requestLayout() から使う。init（addView）より先に呼ばれるため、宣言はここに置く。
+    private var layoutPassScheduled = false
+    private val runLayoutPass: Runnable? =
+        Runnable {
+            layoutPassScheduled = false
+            if (width <= 0 || height <= 0) return@Runnable
+            measure(
+                MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
+            )
+            layout(left, top, right, bottom)
+        }
+
     private val nativeMapExtensionHost =
         NativeMapExtensionHostState(context) { extensionId, eventName, payload ->
             events.emit(
@@ -203,10 +216,55 @@ abstract class MapConductorMapViewWrapperBase(context: Context) :
         bottom: Int,
     ) {
         super.onLayout(changed, left, top, right, bottom)
-        mapView?.layout(0, 0, right - left, bottom - top)
-        extensionComposeView.layout(0, 0, right - left, bottom - top)
+        val width = right - left
+        val height = bottom - top
+        resizeChild(mapView, width, height)
+        resizeChild(extensionComposeView, width, height)
         emitMarkerScreenPositions()
         emitInfoBubbleScreenPositions()
+    }
+
+    /**
+     * 子ビューを新しい大きさへ合わせる。
+     *
+     * React Native はこのラッパーのフレームを直接書き換えるだけで measure パスを走らせない。
+     * `layout()` だけだと子は測定済みサイズを持ったままなので、**子自身が ViewGroup の場合、
+     * その中身は古い大きさのまま残る**（ArcGIS の `WrapMapView` が Esri の MapView を
+     * 抱えている形）。EXACTLY で測り直してから配置する。
+     */
+    private fun resizeChild(
+        child: View?,
+        width: Int,
+        height: Int,
+    ) {
+        if (child == null) return
+        child.measure(
+            MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
+        )
+        child.layout(0, 0, width, height)
+    }
+
+    /**
+     * 子が内部で `requestLayout()` を呼んだら、自分でレイアウトを回し直す。
+     *
+     * React Native の管理下にあるビューは、RN がフレームを直接書き換えるだけで
+     * measure / layout パスを回さない。そのため**ネイティブの子が自分の都合で
+     * `requestLayout()` を呼んでも誰も拾わず、次のレイアウトが永遠に来ない**。
+     *
+     * 実害が出るのは画面回転。ArcGIS の `WrapMapView` は自分の `onLayout` の中で
+     * 内側の Esri `MapView` にピクセル固定の `LayoutParams` を入れ直す（2D の疑似 tilt で
+     * 平面を拡大するため）が、その反映には次のパスが要る。来ないので地図は回転前の
+     * 大きさのまま残り、横長のまま画面からはみ出す。
+     */
+    override fun requestLayout() {
+        super.requestLayout()
+        // init より先に（addView 経由で）呼ばれることがあるので、フィールドの初期化を待つ。
+        val pass = runLayoutPass ?: return
+        if (!layoutPassScheduled) {
+            layoutPassScheduled = true
+            post(pass)
+        }
     }
 
     // -------------------------------------------- MapConductorReactNativeHostDelegate
