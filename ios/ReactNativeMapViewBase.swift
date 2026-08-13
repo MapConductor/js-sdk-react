@@ -171,7 +171,13 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
         }
     }
 
-    private func buildContent() -> MapViewContent {
+    /// 内側で SwiftUI のプロバイダビューを使うホスト（ArcGIS）が、自分の content
+    /// クロージャの中から呼ぶ。詳細は ``MCReactNativeMapHostDelegate/mcAssembleContent()``。
+    public func mcAssembleContent() -> MapViewContent {
+        buildContent(stripViews: false)
+    }
+
+    private func buildContent(stripViews: Bool = true) -> MapViewContent {
         // プロバイダのレジストリが見えるのはコンテンツ組み立ての間だけ、という取り決めは
         // SwiftUI 版（各プロバイダの `body`）と同じ。前後を挟むことで、外された
         // プラグインを検知できる。
@@ -190,6 +196,7 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
             return content
         }
         support?.endContentPass()
+        guard stripViews else { return content }
         // 拡張が差し込むビューだけ SwiftUI 側へ渡し、地図本体には流さない。
         extensionViews.views = content.views
         content.views = []
@@ -438,6 +445,11 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
     // MARK: - MCReactNativeMapHostDelegate
 
     public func mcMapLoaded() {
+        // 地図が繋がって初めて `MarkerRenderingSupportKey` などの capability が
+        // レジストリに載る。それ以前に組み立てたコンテンツは、クラスタリングのように
+        // capability を引くオーバーレイが**黙って何もしない**状態で確定してしまうので、
+        // ここで必ず組み直す。ArcGIS のように地図の結線が非同期なプロバイダで効く。
+        setNeedsContentUpdate()
         eventHandler?("mapLoaded", [:])
     }
 

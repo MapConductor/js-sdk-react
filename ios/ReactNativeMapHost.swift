@@ -80,4 +80,13 @@ public protocol MCReactNativeMapHostDelegate: AnyObject {
     func mcCameraMoveStart(_ camera: MapCameraPosition)
     func mcCameraMove(_ camera: MapCameraPosition)
     func mcCameraMoveEnd(_ camera: MapCameraPosition)
+
+    /// いま持っているオーバーレイから `MapViewContent` を組み立てる。
+    ///
+    /// 内側で SwiftUI のプロバイダビューを使うホスト（ArcGIS）専用。プロバイダの
+    /// `body` は content クロージャの前後で `beginContentPass` / `endContentPass` を
+    /// 呼ぶため、**組み立てをそのクロージャの中で行わないと**、クラスタリングのような
+    /// プラグインが「このパスでは現れなかった」と判定されて接続を切られてしまう。
+    /// `MapViewContent.views` は剥がさずに返す（プロバイダの `MapViewBase` が描くため）。
+    func mcAssembleContent() -> MapViewContent
 }
