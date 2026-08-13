@@ -16,3 +16,10 @@ export {
   markerStateToNative,
   type NativeMarkerStatePayload,
 } from './native-bridge/markerStateToNative';
+export { NativeMapViewHost, type NativeMapViewHostProps } from './native-bridge/NativeMapViewHost';
+export type { NativeMapViewProps, NativeMapViewEvent } from './native-bridge/NativeMapViewProps';
+export {
+  toNativeCameraPosition,
+  toNativeMarkerTilingOptions,
+  type NativeMarkerTilingOptions,
+} from './native-bridge/nativePayloads';
