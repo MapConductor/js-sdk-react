@@ -41,6 +41,7 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
     private var mapView: UIView?
     private var initialized = false
     private var notReadyLabel: UILabel?
+    private var mapInitializationScheduled = false
 
     private var markersById: [String: MarkerState] = [:]
     private var markers: [MarkerState] = []
@@ -90,6 +91,10 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         extensionHostingController.view.backgroundColor = .clear
+        // 拡張が何も差し込んでいなくても、この SwiftUI ホストは全面に載るのでタップを
+        // 吸ってしまい、地図に届かなくなる。android が extensionComposeView に
+        // `isClickable = false` / `isFocusable = false` を立てているのと同じ理由。
+        extensionHostingController.view.isUserInteractionEnabled = false
         addSubview(extensionHostingController.view)
         // 拡張が差し込むビューが増減したらコンテンツを組み直す。
         extensionObserver = extensionHost.objectWillChange.sink { [weak self] _ in
@@ -118,12 +123,25 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
         // 地図の生成は最初のレイアウトまで遅らせる。RN は prop を流し込んでから
         // レイアウトするので、この時点なら apiKey やデザイン指定が揃っている。
         // android の `initializeMapIfNeeded()` と同じ位置づけ。
-        initializeMapIfNeeded()
+        scheduleMapInitializationIfNeeded()
         mapView?.frame = bounds
         notReadyLabel?.frame = bounds.insetBy(dx: 16, dy: 16)
         extensionHostingController.view.frame = bounds
         emitMarkerScreenPositions()
         emitInfoBubbleScreenPositions()
+    }
+
+    /// レイアウト中にビュー階層を触ると、そのパスで地図が一度も描画されないことがある
+    /// （MapLibre は最初の描画を取り逃がし、ユーザーが触るまで真っ白のままになる）。
+    /// 生成は次のランループへ送り、そこで明示的にレイアウトし直す。
+    private func scheduleMapInitializationIfNeeded() {
+        guard !initialized, !mapInitializationScheduled, !bounds.isEmpty else { return }
+        mapInitializationScheduled = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.mapInitializationScheduled = false
+            self.initializeMapIfNeeded()
+        }
     }
 
     private func initializeMapIfNeeded() {
@@ -141,6 +159,8 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
         self.mapView = mapView
         mapView.frame = bounds
         insertSubview(mapView, at: 0)
+        setNeedsLayout()
+        layoutIfNeeded()
     }
 
     private func showNotReadyMessageIfNeeded() {
@@ -206,6 +226,8 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
     // MARK: - カメラ / デザイン
 
     @objc public func setCameraPosition(_ payload: [String: Any]) {
+        // 地図がまだ無くても取りこぼさない。state がカメラを保持し、コントローラが
+        // 繋がった時点（attachController）でその位置へ移動する。
         if let camera = mcCameraPosition(payload) { host.mcMoveCamera(camera, durationMillis: nil) }
     }
 
