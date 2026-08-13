@@ -8,3 +8,11 @@ export { useCameraRestriction } from './hooks/useCameraRestriction';
 export { useMapUISettings } from './hooks/useMapUISettings';
 export { useNativeCapabilityDeclarations } from './hooks/useNativeCapabilityDeclarations';
 export { useMarkerRenderingSupport } from './hooks/useMarkerRenderingSupport';
+
+// RN プロバイダ共通のブリッジ実装。プロバイダはこれを継承するだけでよい。
+export { ReactNativeBridgeMapViewController, type NativeViewRef } from './native-bridge/ReactNativeBridgeMapViewController';
+export { ReactNativeMapViewHolder } from './native-bridge/ReactNativeMapViewHolder';
+export {
+  markerStateToNative,
+  type NativeMarkerStatePayload,
+} from './native-bridge/markerStateToNative';
