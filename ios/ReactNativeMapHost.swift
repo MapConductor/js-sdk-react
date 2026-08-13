@@ -23,6 +23,14 @@ public protocol MCReactNativeMapHost: AnyObject {
     /// 現在のズーム。拡張へマップクリックを配るときに渡す。
     var mcCameraZoom: Double { get }
 
+    /// 地図を作れる状態か。API キーの到着を待つプロバイダ（GoogleMaps）が false を返す。
+    /// false の間、基底は地図を作らず ``mcNotReadyMessage`` を表示する。
+    /// 準備できたらプロバイダ側が `setNeedsLayout()` を呼べば次のレイアウトで作られる。
+    var mcIsReady: Bool { get }
+
+    /// ``mcIsReady`` が false のときに画面へ出す説明。nil なら何も出さない。
+    var mcNotReadyMessage: String? { get }
+
     /// ネイティブの地図ビューを作って返す。基底がサブビューとして載せる。
     func mcMakeMapView(content: MapViewContent) -> UIView
 
@@ -52,6 +60,12 @@ public protocol MCReactNativeMapHost: AnyObject {
         extensionId: String,
         eventSink: @escaping NativeMapExtensionEventSink
     ) -> NativeMapExtensionRenderer?
+}
+
+public extension MCReactNativeMapHost {
+    /// 大半のプロバイダは prop を待たずに地図を作れる。
+    var mcIsReady: Bool { true }
+    var mcNotReadyMessage: String? { nil }
 }
 
 /// 地図から上がってきたイベントを RN のビュー基底へ返す口。

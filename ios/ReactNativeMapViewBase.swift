@@ -40,6 +40,7 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
 
     private var mapView: UIView?
     private var initialized = false
+    private var notReadyLabel: UILabel?
 
     private var markersById: [String: MarkerState] = [:]
     private var markers: [MarkerState] = []
@@ -119,6 +120,7 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
         // android の `initializeMapIfNeeded()` と同じ位置づけ。
         initializeMapIfNeeded()
         mapView?.frame = bounds
+        notReadyLabel?.frame = bounds.insetBy(dx: 16, dy: 16)
         extensionHostingController.view.frame = bounds
         emitMarkerScreenPositions()
         emitInfoBubbleScreenPositions()
@@ -126,11 +128,30 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
 
     private func initializeMapIfNeeded() {
         guard !initialized, !bounds.isEmpty else { return }
+        // API キーのようにビューより後から届く前提のものを待つ。GoogleMaps は
+        // キー未設定のまま GMSMapView を作ると落ちるため、ここで止めて理由を出す。
+        guard host.mcIsReady else {
+            showNotReadyMessageIfNeeded()
+            return
+        }
+        notReadyLabel?.removeFromSuperview()
+        notReadyLabel = nil
         initialized = true
         let mapView = host.mcMakeMapView(content: buildContent())
         self.mapView = mapView
         mapView.frame = bounds
         insertSubview(mapView, at: 0)
+    }
+
+    private func showNotReadyMessageIfNeeded() {
+        guard notReadyLabel == nil, let message = host.mcNotReadyMessage else { return }
+        let label = UILabel()
+        label.text = message
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        notReadyLabel = label
+        addSubview(label)
+        setNeedsLayout()
     }
 
     // MARK: - コンテンツ
