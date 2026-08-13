@@ -199,6 +199,8 @@ declare function MapAttributionOverlay({ scope, camera, designAttributionRules, 
 interface InfoBubbleStyleProps {
     bubbleColor?: string;
     borderColor?: string;
+    /** 枠線の太さ(px)。android の borderWidth / ios の borderWidth と同一契約。 */
+    borderWidth?: number;
     contentPadding?: number;
     cornerRadius?: number;
     tailSize?: number;
@@ -259,12 +261,13 @@ interface InfoBubbleOverlayProps {
 interface DrawInfoBubbleProps {
     bubbleColor?: string;
     borderColor?: string;
+    borderWidth?: number;
     contentPadding?: number;
     cornerRadius?: number;
     tailSize?: number;
     children: ReactNode;
 }
-declare function DrawInfoBubble({ bubbleColor, borderColor, contentPadding, cornerRadius, tailSize, children, }: DrawInfoBubbleProps): React.JSX.Element;
+declare function DrawInfoBubble({ bubbleColor, borderColor, borderWidth, contentPadding, cornerRadius, tailSize, children, }: DrawInfoBubbleProps): React.JSX.Element;
 
 type ResolveScreenOffset = (entry: MarkerAnimationOverlayEntry) => Offset | null | Promise<Offset | null>;
 /**

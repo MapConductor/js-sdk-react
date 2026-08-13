@@ -5,4 +5,5 @@
 export { useMapViewScope } from './MapViewScope.native';
 export { useCollectAndRenderOverlays } from './CollectAndRenderOverlays';
 export { useCameraRestriction } from './hooks/useCameraRestriction';
+export { useMapUISettings } from './hooks/useMapUISettings';
 export { useMarkerRenderingSupport } from './hooks/useMarkerRenderingSupport';

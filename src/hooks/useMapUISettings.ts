@@ -19,11 +19,13 @@ import type {
  * in Android's `MapViewBase` and of `.onChange(of: uiSettings)` on iOS.
  */
 export function useMapUISettings(
-  state: MapViewStateInterface<MapDesignTypeInterface<unknown>>,
+  // React Native 版のビューは `state` を省略できる（プロバイダ側が既定の state を
+  // 内部で作る）ので、controller と同じく null/undefined を受け付ける。
+  state: MapViewStateInterface<MapDesignTypeInterface<unknown>> | null | undefined,
   controller: MapViewControllerInterface | null,
 ): void {
   useEffect(() => {
-    if (!controller?.applyUISettings) return;
+    if (!state || !controller?.applyUISettings) return;
 
     const apply = (settings: MapUISettings) => controller.applyUISettings?.(settings);
     apply(state.uiSettings);
