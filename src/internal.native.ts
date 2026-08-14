@@ -13,6 +13,11 @@ export { useMarkerRenderingSupport } from './hooks/useMarkerRenderingSupport';
 export { ReactNativeBridgeMapViewController, type NativeViewRef } from './native-bridge/ReactNativeBridgeMapViewController';
 export { ReactNativeMapViewHolder } from './native-bridge/ReactNativeMapViewHolder';
 export {
+  createWebMercatorScreenProjection,
+  type ScreenOffset,
+  type ViewportSize,
+} from './native-bridge/WebMercatorScreenProjection';
+export {
   markerStateToNative,
   type NativeMarkerStatePayload,
 } from './native-bridge/markerStateToNative';

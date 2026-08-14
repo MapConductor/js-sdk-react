@@ -42,10 +42,10 @@
     "README.es-419.md"
   ],
   "scripts": {
-    "build": "tsup src/index.ts src/index.native.ts src/internal.ts src/internal.native.ts --format cjs,esm --dts",
-    "dev": "tsup src/index.ts src/index.native.ts src/internal.ts src/internal.native.ts --format cjs,esm --watch",
+    "build": "tsup src/index.ts src/index.native.ts src/internal.ts src/internal.native.ts src/native-bridge/WebMercatorScreenProjection.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts src/index.native.ts src/internal.ts src/internal.native.ts src/native-bridge/WebMercatorScreenProjection.ts --format cjs,esm --watch",
     "clean": "rm -rf dist",
-    "test": "echo 'No tests yet'"
+    "test": "node --test \"test/**/*.test.mjs\""
   },
   "keywords": [
     "maps",
