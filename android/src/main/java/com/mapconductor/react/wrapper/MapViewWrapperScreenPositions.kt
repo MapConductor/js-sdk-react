@@ -51,8 +51,9 @@ class MapViewWrapperScreenPositions(
         tilingOptions: MarkerTilingOptions,
         toScreenOffset: (GeoPointInterface) -> Offset?,
     ) {
-        val tilingActive = markerStates.size >= tilingOptions.minMarkerCount
-        if (tilingActive || markerStates.isEmpty()) {
+        // 判定はコアの規則を呼ぶ（enabled を落とさないこと）。ここで書き直すと
+        // タイリング無効のページでも空を返し、マーカー追従が黙って止まる。
+        if (tilingOptions.shouldUseTiles(markerStates.size) || markerStates.isEmpty()) {
             emitEmptyOnce("topMarkerScreenPositions", emittedEmptyMarkers) { emittedEmptyMarkers = it }
             return
         }

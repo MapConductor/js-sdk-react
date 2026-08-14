@@ -508,8 +508,9 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
     }
 
     private func emitMarkerScreenPositions() {
-        let tilingActive = markers.count >= tiling.minMarkerCount
-        if tilingActive || markers.isEmpty {
+        // 判定はコアの規則を呼ぶ（`enabled` を落とさないこと）。ここで書き直すと
+        // タイリング無効のページでも空を返し、マーカー追従が黙って止まる。
+        if tiling.shouldUseTiles(markerCount: markers.count) || markers.isEmpty {
             if emittedEmptyMarkerScreenPositions { return }
             emittedEmptyMarkerScreenPositions = true
             eventHandler?("markerScreenPositions", ["positions": []])
