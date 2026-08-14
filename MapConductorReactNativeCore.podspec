@@ -11,8 +11,8 @@ Pod::Spec.new do |s|
   s.homepage = "https://github.com/mapconductor/react-sdk"
   s.source = { :path => __dir__ }
   s.platform = :ios, "16.1"
-  s.source_files = "ios/*.{swift,h,mm,cpp}"
-  s.public_header_files = "ios/MarkerScaleBridge.h"
+  s.source_files = "ios/*.{swift,h,m,mm,cpp}"
+  s.public_header_files = "ios/MarkerScaleBridge.h", "ios/MCReactNativeMapViewManager.h"
   s.dependency "MapConductorCore"
   s.dependency "React-Core"
   s.dependency "React-callinvoker"
