@@ -24,6 +24,10 @@ import { useNativeCapabilityDeclarations } from '../hooks/useNativeCapabilityDec
 import { useMarkerRenderingSupport } from '../hooks/useMarkerRenderingSupport';
 import { ReactNativeBridgeMapViewController, type NativeViewRef } from './ReactNativeBridgeMapViewController';
 import { toNativeCameraPosition, toNativeMarkerTilingOptions } from './nativePayloads';
+import {
+  createWebMercatorScreenProjection,
+  type ViewportSize,
+} from './WebMercatorScreenProjection';
 import type { NativeMapViewProps } from './NativeMapViewProps';
 
 export interface NativeMapViewHostProps<
@@ -40,6 +44,16 @@ export interface NativeMapViewHostProps<
   /** apiKey / accessKey などプロバイダ固有のネイティブ props。 */
   // eslint-disable-next-line typescript/no-explicit-any
   nativeProps?: Record<string, any>;
+  /**
+   * 画面座標（InfoBubble とマーカー追従）を誰が計算するか。
+   *
+   * - `'native'`（既定）: ネイティブの `MapViewHolder.toScreenOffset`。
+   * - `'webMercator'`: **JS 側で計算する。** 同期投影を持たないプロバイダ
+   *   （WebView ベースの Longdo / MapTiler は `toScreenOffset` が null）で使う。
+   *   推測せずプロバイダが明示すること（黙って InfoBubble が出ないのを避けるため）。
+   *   Web Mercator 以外の地図や tilt != 0 では使えない。
+   */
+  screenProjection?: 'native' | 'webMercator';
   /** 既定は共有コントローラ。メソッドを override したいプロバイダだけ差し替える。 */
   createController?: (
     ref: React.RefObject<ViewRef | null>,
@@ -65,6 +79,7 @@ export function NativeMapViewHost<
   mapDesignValue,
   nativeProps,
   createController,
+  screenProjection = 'native',
   style,
   onMapLoaded,
   onMapClick,
@@ -102,6 +117,30 @@ export function NativeMapViewHost<
   const [attributionCamera, setAttributionCamera] = useState(() => state.cameraPosition);
   const [infoBubbleScreenPositions, setInfoBubbleScreenPositions] =
     useState<InfoBubbleScreenPositionMap>(() => new Map());
+  // JS 側で投影するときに要る。ネイティブ投影のときは使わない。
+  const [viewSize, setViewSize] = useState<ViewportSize | null>(null);
+
+  /**
+   * JS 側で計算した InfoBubble の画面座標。
+   *
+   * `InfoBubblePositionRequest` が緯度経度を持っているので、ここだけ埋めれば
+   * マーカーに紐づく吹き出しも含めて全部まかなえる（`InfoBubbleLayer` は
+   * `infoBubbleScreenPositions` を先に見て、無ければ `markerScreenPositions` を見る）。
+   */
+  const projectedInfoBubblePositions = useMemo(() => {
+    if (screenProjection !== 'webMercator' || !viewSize) return null;
+    const project = createWebMercatorScreenProjection(attributionCamera, viewSize);
+    const projected = new Map<string, { x: number; y: number }>();
+    infoBubblePositions.forEach((request) => {
+      const offset = project({
+        latitude: request.latitude,
+        longitude: request.longitude,
+        altitude: request.altitude,
+      });
+      if (offset) projected.set(request.id, offset);
+    });
+    return projected;
+  }, [screenProjection, viewSize, attributionCamera, infoBubblePositions]);
 
   useCollectAndRenderOverlays(registry, controller);
   // ネイティブ側に範囲制限 API を渡していないため、BaseMapViewController の
@@ -110,7 +149,7 @@ export function NativeMapViewHost<
   // state.uiSettings をネイティブのコントローラへ流す（web の MapViewBase 相当）。
   useMapUISettings(state, controller);
   // RN は同期投影を持たない（ネイティブ側で投影する）ことを明示する。
-  useNativeCapabilityDeclarations(state);
+  useNativeCapabilityDeclarations(state, { screenProjection });
 
   useEffect(() => {
     const iconScaleCallback = markerTilingOptions?.iconScaleCallback;
@@ -211,7 +250,21 @@ export function NativeMapViewHost<
     <MapContext.Provider value={createMapContextValue({ controller, isReady, isLoaded, state: state ?? null })}>
       <MapServiceRegistryProvider registry={state?.serviceRegistry}>
         <MapViewScopeProvider scope={scope}>
-          <View style={style ?? { flex: 1 }}>
+          <View
+            style={style ?? { flex: 1 }}
+            onLayout={
+              screenProjection === 'webMercator'
+                ? (event) => {
+                    const { width, height } = event.nativeEvent.layout;
+                    setViewSize((previous) =>
+                      previous && previous.width === width && previous.height === height
+                        ? previous
+                        : { width, height }
+                    );
+                  }
+                : undefined
+            }
+          >
             <NativeMapView
               ref={nativeRef}
               {...nativeProps}
@@ -325,7 +378,7 @@ export function NativeMapViewHost<
             <InfoBubbleLayer
               scope={scope}
               markerScreenPositions={markerScreenPositions}
-              infoBubbleScreenPositions={infoBubbleScreenPositions}
+              infoBubbleScreenPositions={projectedInfoBubblePositions ?? infoBubbleScreenPositions}
               onPositionRequestsChange={setInfoBubblePositions}
             />
             <MapAttributionOverlay
