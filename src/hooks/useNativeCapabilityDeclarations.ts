@@ -17,13 +17,8 @@ import type {
  */
 export function useNativeCapabilityDeclarations(
   state: MapViewStateInterface<MapDesignTypeInterface<unknown>> | null | undefined,
-  options: { screenProjection?: 'native' | 'webMercator' } = {},
 ): void {
-  const screenProjection = options.screenProjection ?? 'native';
   useEffect(() => {
-    // JS 側で投影するプロバイダ（Web Mercator の WebView 系）は同期投影を持つので、
-    // ここで Unsupported を宣言しない。宣言すると動いている機能が止まる。
-    if (screenProjection === 'webMercator') return;
     const registry = state?.serviceRegistry;
     if (!registry?.declareUnsupported) return;
     const registration = registry.declareUnsupported(
@@ -31,5 +26,5 @@ export function useNativeCapabilityDeclarations(
       'React Native では投影をネイティブ側で行うため、JS のホルダーは同期投影を持たない。',
     );
     return () => registration.dispose();
-  }, [state, screenProjection]);
+  }, [state]);
 }
