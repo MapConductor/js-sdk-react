@@ -11,6 +11,7 @@ import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.mapconductor.core.ResourceProvider
 import com.mapconductor.core.controller.BaseMapViewController
+import com.mapconductor.core.features.GeoPoint
 import com.mapconductor.core.groundimage.GroundImageState
 import com.mapconductor.core.map.MapCameraPosition
 import com.mapconductor.core.map.MapOverlayRegistry
@@ -298,36 +299,50 @@ abstract class MapConductorMapViewWrapperBase(context: Context) :
         emitInfoBubbleScreenPositions()
     }
 
+    override fun onMapClick(point: GeoPoint) {
+        val zoom =
+            latestCameraPosition?.zoom
+                ?: requestedCameraPosition?.zoom
+                ?: MapCameraPosition.Default.zoom
+        if (!nativeMapExtensionHost.dispatchMapClick(point, zoom)) {
+            events.emitPointEvent("topMapClick", point)
+        }
+    }
+
+    override fun onMapLongClick(point: GeoPoint) {
+        events.emitPointEvent("topMapLongClick", point)
+    }
+
+    override fun onCameraMoveStart(camera: MapCameraPosition) {
+        latestCameraPosition = camera
+        events.emitCameraEvent("topCameraMoveStart", camera.toWritableMap())
+        emitMarkerScreenPositions()
+        emitInfoBubbleScreenPositions()
+    }
+
+    override fun onCameraMove(camera: MapCameraPosition) {
+        latestCameraPosition = camera
+        events.emitCameraEvent("topCameraMove", camera.toWritableMap())
+        emitMarkerScreenPositions()
+        emitInfoBubbleScreenPositions()
+    }
+
+    override fun onCameraMoveEnd(camera: MapCameraPosition) {
+        latestCameraPosition = camera
+        events.emitCameraEvent("topCameraMoveEnd", camera.toWritableMap())
+        emitMarkerScreenPositions()
+        emitInfoBubbleScreenPositions()
+    }
+
     private fun configureController(controller: BaseMapViewController) {
         controller.applyUISettings(pendingUISettings)
-        controller.setCameraMoveStartListener { camera ->
-            latestCameraPosition = camera
-            events.emitCameraEvent("topCameraMoveStart", camera.toWritableMap())
-            emitMarkerScreenPositions()
-            emitInfoBubbleScreenPositions()
+        if (!host.deliversCameraEventsDirectly) {
+            controller.setCameraMoveStartListener(::onCameraMoveStart)
+            controller.setCameraMoveListener(::onCameraMove)
+            controller.setCameraMoveEndListener(::onCameraMoveEnd)
         }
-        controller.setCameraMoveListener { camera ->
-            latestCameraPosition = camera
-            events.emitCameraEvent("topCameraMove", camera.toWritableMap())
-            emitMarkerScreenPositions()
-            emitInfoBubbleScreenPositions()
-        }
-        controller.setCameraMoveEndListener { camera ->
-            latestCameraPosition = camera
-            events.emitCameraEvent("topCameraMoveEnd", camera.toWritableMap())
-            emitMarkerScreenPositions()
-            emitInfoBubbleScreenPositions()
-        }
-        controller.setMapClickListener { point ->
-            val zoom =
-                latestCameraPosition?.zoom
-                    ?: requestedCameraPosition?.zoom
-                    ?: MapCameraPosition.Default.zoom
-            if (!nativeMapExtensionHost.dispatchMapClick(point, zoom)) {
-                events.emitPointEvent("topMapClick", point)
-            }
-        }
-        controller.setMapLongClickListener { events.emitPointEvent("topMapLongClick", it) }
+        controller.setMapClickListener(::onMapClick)
+        controller.setMapLongClickListener(::onMapLongClick)
     }
 
     // ------------------------------------------------------------------- props

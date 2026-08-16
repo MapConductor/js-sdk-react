@@ -5,6 +5,7 @@ import android.view.View
 import androidx.compose.ui.geometry.Offset
 import com.mapconductor.compose.MapViewScope
 import com.mapconductor.core.controller.BaseMapViewController
+import com.mapconductor.core.features.GeoPoint
 import com.mapconductor.core.features.GeoPointInterface
 import com.mapconductor.core.map.MapCameraPosition
 import com.mapconductor.core.map.MutableMapServiceRegistry
@@ -33,6 +34,17 @@ interface MapConductorReactNativeHost {
 
     /** 拡張モジュールが capability を引くレジストリ。 */
     val serviceRegistry: MutableMapServiceRegistry
+
+    /**
+     * true のプロバイダは、地図ビューが [MapConductorReactNativeHostDelegate] へ
+     * カメライベントを直接返す。
+     *
+     * 通常はコントローラのリスナーから受け取る。Longdo のように Compose の地図ホストが
+     * start / move / end を合成するプロバイダだけ true にし、同じ move をコントローラ経由でも
+     * 配送して二重発火させない。
+     */
+    val deliversCameraEventsDirectly: Boolean
+        get() = false
 
     /**
      * ネイティブの地図ビューを作って返す。基底が index 0 のサブビューとして載せる。
@@ -92,4 +104,15 @@ interface MapConductorReactNativeHostDelegate {
      * （SDK によっては初期化リスナーと状態フラグの両方から来る）
      */
     fun onMapLoaded()
+
+    /** 地図ホスト自身がイベントを組み立てるプロバイダ用。iOS の同名 delegate と対になる。 */
+    fun onMapClick(point: GeoPoint)
+
+    fun onMapLongClick(point: GeoPoint)
+
+    fun onCameraMoveStart(camera: MapCameraPosition)
+
+    fun onCameraMove(camera: MapCameraPosition)
+
+    fun onCameraMoveEnd(camera: MapCameraPosition)
 }
