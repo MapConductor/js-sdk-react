@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.platform = :ios, "16.1"
   s.source_files = "ios/*.{swift,h,m,mm,cpp}"
   s.public_header_files = "ios/MarkerScaleBridge.h", "ios/MCReactNativeMapViewManager.h"
-  s.dependency "MapConductorCore"
+  s.dependency "MapConductorCore", "~> 1.3.0"
   s.dependency "React-Core"
   s.dependency "React-callinvoker"
   s.dependency "React-jsi"
