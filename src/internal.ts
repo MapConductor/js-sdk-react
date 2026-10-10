@@ -13,3 +13,6 @@ export { useCollectAndRenderOverlays } from './CollectAndRenderOverlays';
 export { useCameraRestriction } from './hooks/useCameraRestriction';
 export { useMapUISettings } from './hooks/useMapUISettings';
 export { useMarkerRenderingSupport } from './hooks/useMarkerRenderingSupport';
+export { useMapViewStyle } from './hooks/useMapViewStyle';
+export { useVectorStyleMutationSupport } from './hooks/useVectorStyleMutationSupport';
+export type { StylePatchableGlMap } from './hooks/useVectorStyleMutationSupport';

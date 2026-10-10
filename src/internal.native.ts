@@ -8,6 +8,9 @@ export { useCameraRestriction } from './hooks/useCameraRestriction';
 export { useMapUISettings } from './hooks/useMapUISettings';
 export { useNativeCapabilityDeclarations } from './hooks/useNativeCapabilityDeclarations';
 export { useMarkerRenderingSupport } from './hooks/useMarkerRenderingSupport';
+export { useMapViewStyle } from './hooks/useMapViewStyle';
+export { useVectorStyleMutationSupport } from './hooks/useVectorStyleMutationSupport';
+export type { StylePatchableGlMap } from './hooks/useVectorStyleMutationSupport';
 
 // RN プロバイダ共通のブリッジ実装。プロバイダはこれを継承するだけでよい。
 export { ReactNativeBridgeMapViewController, type NativeViewRef } from './native-bridge/ReactNativeBridgeMapViewController';

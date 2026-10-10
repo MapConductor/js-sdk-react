@@ -44,6 +44,16 @@ public protocol MCReactNativeMapHost: AnyObject {
     /// 地図とコントローラを破棄する。
     func mcUnbind()
 
+    /**
+     What the map offers a ``MapViewStyle``, when this provider has one.
+
+     Every provider's host is a `MapViewCoordinatorBase` and so has a
+     `styleHost`; the default is nil only so a provider that is not one
+     still compiles. A nil here means a style given to this provider is
+     reported rather than drawn.
+     */
+    var mcStyleHost: MapViewStyleHost? { get }
+
     func mcSetMapDesign(id: String?)
     func mcMoveCamera(_ camera: MapCameraPosition, durationMillis: Int64?)
     func mcFitBounds(_ bounds: GeoRectBounds, padding: Int)
@@ -89,4 +99,9 @@ public protocol MCReactNativeMapHostDelegate: AnyObject {
     /// プラグインが「このパスでは現れなかった」と判定されて接続を切られてしまう。
     /// `MapViewContent.views` は剥がさずに返す（プロバイダの `MapViewBase` が描くため）。
     func mcAssembleContent() -> MapViewContent
+}
+
+
+public extension MCReactNativeMapHost {
+    var mcStyleHost: MapViewStyleHost? { nil }
 }

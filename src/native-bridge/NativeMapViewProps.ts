@@ -21,6 +21,15 @@ export interface NativeMapViewEvent<T> {
  * }
  * ```
  */
+/** {@link NativeMapViewProps.vectorStyle} の中身。core の `NativeStyleDescriptor` と同形。 */
+export interface NativeVectorStyleProps {
+  documentJson?: string;
+  documentUrl?: string;
+  documentHeaders?: Record<string, string>;
+  fromCurrentDesign?: boolean;
+  rulesJson: string;
+}
+
 export interface NativeMapViewProps extends ViewProps {
   cameraPosition?: {
     position: { latitude: number; longitude: number; altitude?: number | null };
@@ -29,6 +38,16 @@ export interface NativeMapViewProps extends ViewProps {
     tilt: number;
   };
   mapDesignType?: string;
+  /**
+   * 地図の見た目。ネイティブ側の `VectorStyle` がこれを読んで組み立てる。
+   *
+   * JS で組み立てないのは、コンパイラが wasm で Hermes に wasm が無いため、
+   * そして地図が JS オブジェクトではなく Android / iOS の SDK そのものだから。
+   * 文字列 2 本だけ渡して、あとは各プラットフォームのベクタースタイル
+   * モジュールに任せる——ユーザーが見る地図は、ネイティブアプリが動かすのと
+   * まったく同じコードが描いたものになる。
+   */
+  vectorStyle?: NativeVectorStyleProps;
   markerTilingOptions?: NativeMarkerTilingOptions;
   infoBubblePositions?: Array<{
     id: string;

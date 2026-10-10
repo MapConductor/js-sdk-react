@@ -276,6 +276,9 @@ abstract class MapConductorMapViewWrapperBase(context: Context) :
     override fun onControllerReady(controller: BaseMapViewController) {
         mapController = controller
         configureController(controller)
+        // 地図の見た目。JS では組み立てられない（コンパイラが wasm、Hermes に
+        // wasm が無い）ので、記述だけ渡ってきたものをここで組み立てる。
+        vectorStyle.onControllerReady(host.serviceRegistry, controller)
         extensionComposeView.setContent {
             RenderNativeExtensions(
                 scope = host.extensionScope,
@@ -356,6 +359,18 @@ abstract class MapConductorMapViewWrapperBase(context: Context) :
     fun setMapDesignType(mapDesignType: String?) {
         host.setMapDesign(mapDesignType)
     }
+
+    fun setVectorStyle(descriptor: ReadableMap?) {
+        vectorStyle.set(descriptor)
+    }
+
+    /** See [ReactNativeVectorStyle]. */
+    private val vectorStyle =
+        ReactNativeVectorStyle { diagnostics ->
+            val payload = Arguments.createMap()
+            payload.putArray("diagnostics", Arguments.fromList(diagnostics))
+            events.emit("topStyleDiagnostics", payload)
+        }
 
     fun setInfoBubblePositions(positions: ReadableArray?) {
         infoBubblePositions = MapViewWrapperScreenPositions.parseInfoBubblePositions(positions)

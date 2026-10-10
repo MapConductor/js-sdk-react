@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable) void (^eventHandler)(NSString *, NSDictionary *);
 - (void)setCameraPosition:(NSDictionary *)payload;
 - (void)setMapDesignType:(nullable NSString *)value;
+/// 地図の見た目。JS は記述だけ渡してくる（`MCReactNativeVectorStyle` を参照）。
+- (void)setVectorStyle:(nullable NSDictionary *)props;
 - (void)setMarkerTilingOptions:(nullable NSDictionary *)payload viewId:(NSInteger)viewId;
 - (void)setInfoBubblePositions:(NSArray *)positions;
 - (void)moveCamera:(NSDictionary *)payload duration:(double)duration;
@@ -159,6 +161,7 @@ FOUNDATION_EXPORT void MCReactNativeRegisterLegacyViewManagerInterop(NSString *c
 /* prop */ \
   RCT_CUSTOM_VIEW_PROPERTY(cameraPosition, NSDictionary, MCReactNativeMapContainerView) { if (json) [view.mapView setCameraPosition:json]; } \
   RCT_CUSTOM_VIEW_PROPERTY(mapDesignType, NSString, MCReactNativeMapContainerView) { [view.mapView setMapDesignType:json]; } \
+  RCT_CUSTOM_VIEW_PROPERTY(vectorStyle, NSDictionary, MCReactNativeMapContainerView) { [view.mapView setVectorStyle:json]; } \
   RCT_CUSTOM_VIEW_PROPERTY(markerTilingOptions, NSDictionary, MCReactNativeMapContainerView) { [view.mapView setMarkerTilingOptions:json viewId:view.reactTag.integerValue]; } \
   RCT_CUSTOM_VIEW_PROPERTY(infoBubblePositions, NSArray, MCReactNativeMapContainerView) { [view.mapView setInfoBubblePositions:json ?: @[]]; } \
 /* コマンド */ \

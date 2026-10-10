@@ -36,6 +36,11 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
         fatalError("\(type(of: self)) must override makeHost()")
     }
 
+    /// `vectorStyle` prop と地図をつなぐ。到着順はどちらでもよい。
+    private lazy var vectorStyle = MCVectorStyleBinding { [weak self] diagnostics in
+        self?.eventHandler?("topStyleDiagnostics", ["diagnostics": diagnostics])
+    }
+
     // MARK: - 状態
 
     private var mapView: UIView?
@@ -229,6 +234,15 @@ open class MCReactNativeMapViewBase: UIView, MCReactNativeMapHostDelegate {
         // 地図がまだ無くても取りこぼさない。state がカメラを保持し、コントローラが
         // 繋がった時点（attachController）でその位置へ移動する。
         if let camera = mcCameraPosition(payload) { host.mcMoveCamera(camera, durationMillis: nil) }
+    }
+
+    /**
+     地図の見た目。JS は「記述」だけ渡してくるので、組み立てはここから先。
+     詳細は ``MCReactNativeVectorStyle``。
+     */
+    @objc public func setVectorStyle(_ props: NSDictionary?) {
+        vectorStyle.set(props)
+        if let styleHost = host.mcStyleHost { vectorStyle.attach(to: styleHost) }
     }
 
     @objc public func setMapDesignType(_ value: String?) {

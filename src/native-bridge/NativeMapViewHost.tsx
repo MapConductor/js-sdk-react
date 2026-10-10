@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { findNodeHandle, StyleSheet, View } from 'react-native';
-import { GeoPoint, MapCameraPosition, mapViewStateInternal } from '@mapconductor/js-sdk-core';
+import {
+  GeoPoint,
+  isNativeDescribableStyle,
+  MapCameraPosition,
+  mapViewStateInternal,
+} from '@mapconductor/js-sdk-core';
 import {
   InfoBubbleLayer,
   type InfoBubblePositionRequest,
@@ -74,6 +79,8 @@ export function NativeMapViewHost<
   onCameraMoveEnd,
   cameraRestriction,
   markerTilingOptions,
+  mapStyle,
+  onStyleDiagnostics,
   children,
 }: NativeMapViewHostProps<ViewRef, TState>) {
   const nativeRef = useRef<ViewRef | null>(null);
@@ -102,6 +109,30 @@ export function NativeMapViewHost<
   const [attributionCamera, setAttributionCamera] = useState(() => state.cameraPosition);
   const [infoBubbleScreenPositions, setInfoBubbleScreenPositions] =
     useState<InfoBubbleScreenPositionMap>(() => new Map());
+  /**
+   * The style, as something the native SDK can rebuild.
+   *
+   * **Not installed here.** On React Native the compiler is a wasm binary
+   * and Hermes has no wasm; the map is the Android or iOS SDK rather than a
+   * JavaScript object, and that SDK already has the whole of this working.
+   * So the style crosses the bridge as two strings and is rebuilt on the
+   * other side — the map a user sees comes from exactly the code a native
+   * app runs.
+   *
+   * A style that cannot describe itself this way says so once rather than
+   * being silently ignored; nothing else would report it.
+   */
+  const nativeStyle = useMemo(() => {
+    if (!mapStyle) return undefined;
+    if (isNativeDescribableStyle(mapStyle)) return mapStyle.toNativeDescriptor();
+    const message =
+      'this style cannot be carried to the native map; on React Native a style has to ' +
+      'describe itself rather than draw itself (see NativeDescribableStyle)';
+    if (onStyleDiagnostics) onStyleDiagnostics([message]);
+    else console.warn(`[MapConductor] style: ${message}`);
+    return undefined;
+  }, [mapStyle, onStyleDiagnostics]);
+
   useCollectAndRenderOverlays(registry, controller);
   // ネイティブ側に範囲制限 API を渡していないため、BaseMapViewController の
   // クランプ方式で効く（android-sdk の HERE/ArcGIS/TomTom と同じ振り分け）。
@@ -219,6 +250,7 @@ export function NativeMapViewHost<
               style={StyleSheet.absoluteFill}
               cameraPosition={toNativeCameraPosition(initialCameraPositionRef.current)}
               mapDesignType={mapDesignValue}
+              vectorStyle={nativeStyle}
               markerTilingOptions={toNativeMarkerTilingOptions(markerTilingOptions)}
               infoBubblePositions={infoBubblePositions}
               onMapLoaded={() => {
