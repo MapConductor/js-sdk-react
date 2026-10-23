@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.facebook.react.bridge.ReadableMap
 import com.mapconductor.core.features.GeoPoint
+import com.mapconductor.core.marker.AbstractDefaultIcon
 import com.mapconductor.core.marker.ColorDefaultIcon
 import com.mapconductor.core.marker.DrawableDefaultIcon
 import com.mapconductor.core.marker.ImageIcon
@@ -207,6 +208,7 @@ private data class NativeMarkerIcon(
     val labelTextColor: Color?,
     val labelTextSize: Float,
     val labelStrokeColor: Color,
+    val labelPosition: String,
 ) {
     fun toMarkerIcon(context: Context): MarkerIconInterface? {
         iconCache[this]?.let { return it }
@@ -221,6 +223,7 @@ private data class NativeMarkerIcon(
                     labelTextColor = labelTextColor,
                     labelTextSize = labelTextSize.sp,
                     labelStrokeColor = labelStrokeColor,
+                    labelPosition = labelPosition,
                     infoAnchor = infoAnchor,
                     iconSize = iconSize.dp,
                     debug = debug,
@@ -237,6 +240,7 @@ private data class NativeMarkerIcon(
                         labelTextColor = labelTextColor,
                         labelTextSize = labelTextSize.sp,
                         labelStrokeColor = labelStrokeColor,
+                        labelPosition = labelPosition,
                         infoAnchor = infoAnchor,
                         iconSize = iconSize.dp,
                         debug = debug,
@@ -283,6 +287,7 @@ private data class NativeMarkerIcon(
                     parseColor(map.string("labelTextColor"), Color.Black),
                 labelTextSize = (map.number("labelTextSize") ?: 18.0).toFloat(),
                 labelStrokeColor = parseColor(map.string("labelStrokeColor"), Color.White),
+                labelPosition = map.string("labelPosition") ?: AbstractDefaultIcon.DEFAULT_LABEL_POSITION,
             )
         }
     }

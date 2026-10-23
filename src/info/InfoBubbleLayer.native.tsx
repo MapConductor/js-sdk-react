@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { Offset } from '@mapconductor/js-sdk-core';
+import { markerIconExtentPx } from '@mapconductor/js-sdk-core';
 import type { MapViewScope } from '../MapViewScope.native';
 import type { InfoBubbleEntry } from './InfoBubbleEntry';
 import { InfoBubbleOverlay } from './InfoBubbleOverlay.native';
@@ -57,7 +58,8 @@ export function InfoBubbleLayer({
         const markerId = entry.markerId ?? entry.id;
         const offset = infoBubbleScreenPositions.get(entry.id) ?? markerScreenPositions.get(markerId);
         if (!offset) return null;
-        const iconSizeValue = entry.icon ? entry.icon.iconSize * entry.icon.scale : 0;
+        // anchor / infoAnchor はアイコンの実寸に対する割合（web と同じ。InfoBubbleOverlay を参照）。
+        const iconSizeValue = markerIconExtentPx(entry.icon);
         const iconOffset = entry.icon?.anchor ?? { x: 0.5, y: 0.5 };
         const infoAnchorOffset = entry.icon?.infoAnchor ?? { x: 0.5, y: 0.5 };
 
@@ -65,7 +67,7 @@ export function InfoBubbleLayer({
           <InfoBubbleOverlay
             key={entry.id}
             positionOffset={offset}
-            iconSize={{ width: iconSizeValue, height: iconSizeValue }}
+            iconSize={iconSizeValue}
             iconOffset={iconOffset}
             infoAnchorOffset={infoAnchorOffset}
             tailOffset={entry.tailOffset}

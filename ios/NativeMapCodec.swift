@@ -187,6 +187,7 @@ public struct NativeMarkerIconPayload {
     public let labelTextColor: UIColor?
     public let labelTextSize: CGFloat
     public let labelStrokeColor: UIColor
+    public let labelPosition: String
 
     public static func decode(_ value: Any?) -> NativeMarkerIconPayload? {
         guard let map = mcMap(value), let type = mcString(map["type"]),
@@ -207,7 +208,8 @@ public struct NativeMarkerIconPayload {
             label: mcString(map["label"]),
             labelTextColor: mcColor(css: map["labelTextColor"], default: .black),
             labelTextSize: CGFloat(mcDouble(map["labelTextSize"], default: 18.0)),
-            labelStrokeColor: mcColor(css: map["labelStrokeColor"], default: .white) ?? .white
+            labelStrokeColor: mcColor(css: map["labelStrokeColor"], default: .white) ?? .white,
+            labelPosition: mcString(map["labelPosition"]) ?? DefaultMarkerIcon.defaultLabelPosition
         )
     }
 
@@ -222,6 +224,7 @@ public struct NativeMarkerIconPayload {
                 labelTextColor: labelTextColor,
                 labelTextSize: labelTextSize,
                 labelStrokeColor: labelStrokeColor,
+                labelPosition: labelPosition,
                 infoAnchor: infoAnchor,
                 iconSize: iconSize,
                 debug: debug
@@ -238,6 +241,7 @@ public struct NativeMarkerIconPayload {
                 labelTextColor: labelTextColor,
                 labelTextSize: labelTextSize,
                 labelStrokeColor: labelStrokeColor,
+                labelPosition: labelPosition,
                 infoAnchor: infoAnchor,
                 iconSize: iconSize,
                 debug: debug
