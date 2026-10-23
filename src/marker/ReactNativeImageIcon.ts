@@ -1,4 +1,4 @@
-import type { MarkerIcon, Offset, BitmapIcon } from '@mapconductor/js-sdk-core';
+import type { MarkerIcon, MarkerLabelPosition, Offset, BitmapIcon } from '@mapconductor/js-sdk-core';
 import { ColorDefaultIcon, combineHash, hashBool, hashNum, hashStr } from '@mapconductor/js-sdk-core';
 import { Settings } from '@mapconductor/js-sdk-core';
 
@@ -18,6 +18,8 @@ export interface ReactNativeImageDefaultIconOptions {
   labelTextColor?: string | null;
   labelTextSize?: number;
   labelStrokeColor?: string;
+  /** ラベルをピンに対してどこへ置くか。書き方は `DefaultMarkerIconOptions.labelPosition` と同じ。 */
+  labelPosition?: MarkerLabelPosition;
   infoAnchor?: Offset;
   iconSize?: number;
   debug?: boolean;
@@ -66,7 +68,10 @@ export class ReactNativeImageDefaultIcon implements MarkerIcon {
   readonly labelTextColor: string | null;
   readonly labelTextSize: number;
   readonly labelStrokeColor: string;
+  readonly labelPosition: MarkerLabelPosition;
   readonly iconSize: number;
+  // 描くのはネイティブ側。JS からはピン本体に対する割合のまま扱う（吹き出しの位置計算は
+  // infoAnchor − anchor の差しか使わないので、ラベルの置き場所に依らず正しい）。
   readonly anchor: Offset = { x: 0.5, y: 1 };
   readonly infoAnchor: Offset;
   readonly debug: boolean;
@@ -82,6 +87,7 @@ export class ReactNativeImageDefaultIcon implements MarkerIcon {
     this.labelTextColor = options.labelTextColor ?? '#000000';
     this.labelTextSize = options.labelTextSize ?? 18;
     this.labelStrokeColor = options.labelStrokeColor ?? '#ffffff';
+    this.labelPosition = options.labelPosition ?? 'center center';
     this.infoAnchor = options.infoAnchor ?? { x: 0.5, y: 0 };
     this.iconSize = options.iconSize ?? Settings.Default.iconSize;
     this.debug = options.debug ?? false;
@@ -96,6 +102,7 @@ export class ReactNativeImageDefaultIcon implements MarkerIcon {
     result = combineHash(result, hashStr(this.labelTextColor ?? ''));
     result = combineHash(result, hashNum(this.labelTextSize));
     result = combineHash(result, hashStr(this.labelStrokeColor));
+    result = combineHash(result, hashStr(this.labelPosition));
     result = combineHash(result, hashNum(this.infoAnchor.x));
     result = combineHash(result, hashNum(this.infoAnchor.y));
     result = combineHash(result, hashNum(this.iconSize));
@@ -133,6 +140,7 @@ export interface NativeMarkerIconPayload {
   labelTextColor?: string | null;
   labelTextSize?: number;
   labelStrokeColor?: string;
+  labelPosition?: string;
 }
 
 export function markerIconToNative(icon: MarkerIcon | null): NativeMarkerIconPayload | null {
@@ -147,7 +155,9 @@ export function markerIconToNative(icon: MarkerIcon | null): NativeMarkerIconPay
       labelTextColor: icon.labelTextColor,
       labelTextSize: icon.labelTextSize,
       labelStrokeColor: icon.labelStrokeColor,
-      infoAnchor: icon.infoAnchor,
+      labelPosition: icon.labelPosition,
+      // ネイティブ側でレイアウトし直すので、ビットマップ基準へ直す前の値を渡す。
+      infoAnchor: icon.requestedInfoAnchor,
       iconSize: icon.iconSize,
       debug: icon.debug,
     };
@@ -174,6 +184,7 @@ export function markerIconToNative(icon: MarkerIcon | null): NativeMarkerIconPay
       labelTextColor: icon.labelTextColor,
       labelTextSize: icon.labelTextSize,
       labelStrokeColor: icon.labelStrokeColor,
+      labelPosition: icon.labelPosition,
       infoAnchor: icon.infoAnchor,
       iconSize: icon.iconSize,
       debug: icon.debug,
