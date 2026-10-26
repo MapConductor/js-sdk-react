@@ -47,6 +47,11 @@ function followMarker(
     };
 }
 
+/**
+ * How the bubble looks. Each one left out falls back to its `--mc-bubble-*`
+ * custom property, so it can be set from CSS instead; one given here wins over
+ * the CSS. Lengths are px.
+ */
 interface InfoBubbleStyleProps {
     bubbleColor?: string;
     borderColor?: string;
@@ -55,6 +60,12 @@ interface InfoBubbleStyleProps {
     contentPadding?: number;
     cornerRadius?: number;
     tailSize?: number;
+    /**
+     * Web only. Added to the bubble's element, next to `mc-info-bubble`. The
+     * children sit directly inside it, so `.my-bubble h1` reaches them and
+     * `color` set on the class is inherited.
+     */
+    className?: string;
     children: ReactNode;
 }
 
@@ -83,13 +94,16 @@ export type InfoBubbleProps = InfoBubbleMarkerProps | InfoBubblePositionProps;
  * `InfoBubbleCompose.kt#InfoBubble(marker, ...)` / `InfoBubble(position, ...)`.
  */
 export function InfoBubble(props: InfoBubbleProps) {
+    // No defaults here: a value left out is the stylesheet's to decide
+    // (#ffffff, #000000, 2, 8, 4, 8 unless the app's CSS says otherwise).
     const {
-        bubbleColor = '#ffffff',
-        borderColor = '#000000',
-        borderWidth = 2,
-        contentPadding = 8,
-        cornerRadius = 4,
-        tailSize = 8,
+        bubbleColor,
+        borderColor,
+        borderWidth,
+        contentPadding,
+        cornerRadius,
+        tailSize,
+        className,
         children,
     } = props;
     const marker = props.marker;
@@ -105,6 +119,7 @@ export function InfoBubble(props: InfoBubbleProps) {
             contentPadding={contentPadding}
             cornerRadius={cornerRadius}
             tailSize={tailSize}
+            className={className}
         >
             {children}
         </DrawInfoBubble>
@@ -135,7 +150,7 @@ export function InfoBubble(props: InfoBubbleProps) {
             bubbleCollector.remove(entry.id);
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [marker, position]);
+    }, [marker, position, className]);
 
     return null;
 }
@@ -143,11 +158,17 @@ export function InfoBubble(props: InfoBubbleProps) {
 interface InfoBubbleCustomProps {
     marker: MarkerState;
     tailOffset: Offset;
+    /**
+     * Web only. Put on the element that holds the children, as
+     * `mc-info-bubble-custom <className>`. The SDK gives that element no look of
+     * its own; it is there so the content can be styled from one class.
+     */
+    className?: string;
     children: ReactNode;
 }
 
 /** Registers a fully custom bubble content. Mirrors `InfoBubbleCompose.kt#InfoBubbleCustom`. */
-export function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCustomProps) {
+export function InfoBubbleCustom({ marker, tailOffset, className, children }: InfoBubbleCustomProps) {
     const { bubbleCollector } = useMapViewScope();
 
     useEffect(() => {
@@ -157,10 +178,14 @@ export function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCus
             positionProvider: () => marker.position,
             icon,
             tailOffset,
-            content: children,
+            content: (
+                <div className={['mc-info-bubble-custom', className].filter(Boolean).join(' ')}>
+                    {children}
+                </div>
+            ),
         }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [marker, tailOffset]);
+    }, [marker, tailOffset, className]);
 
     return null;
 }
