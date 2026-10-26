@@ -2,7 +2,50 @@ import { useEffect, useId, type ReactNode } from 'react';
 import { DrawInfoBubble } from './DrawInfoBubble';
 import { useMapViewScope } from '../MapViewScope';
 import type { InfoBubbleEntry } from './InfoBubbleEntry';
-import { createDefaultIcon, type GeoPoint, type MarkerState, type Offset } from '@mapconductor/js-sdk-core';
+import {
+    createDefaultIcon,
+    type GeoPoint,
+    type MarkerIcon,
+    type MarkerState,
+    type Offset,
+    type OverlayCollector,
+} from '@mapconductor/js-sdk-core';
+
+/**
+ * Registers a marker's bubble and keeps its icon current.
+ *
+ * The position is read through `positionProvider` on every draw, so it
+ * follows the marker on its own. The icon is a value in the entry, so an icon
+ * swapped on the same MarkerState (`marker.icon = …`) left the bubble at the
+ * old icon's size, `anchor` and `infoAnchor`, and the `[marker]` effect
+ * dependency never saw the change. Re-add the entry when the icon changes.
+ *
+ * Only on an icon change: the fingerprint also ticks on every position change,
+ * which is every frame of an animation or a drag, and re-adding then would
+ * renotify the collector for nothing.
+ */
+function followMarker(
+    bubbleCollector: OverlayCollector<InfoBubbleEntry>,
+    marker: MarkerState,
+    buildEntry: (icon: MarkerIcon) => InfoBubbleEntry,
+): () => void {
+    let icon = marker.icon;
+    // A marker with no explicit icon is rendered with the default pin (48px,
+    // anchored at its bottom tip). Resolve null to that same default so the
+    // bubble is offset by the pin's real size instead of collapsing to a
+    // zero-size icon and overlapping the marker.
+    const add = () => bubbleCollector.add(buildEntry(icon ?? createDefaultIcon()));
+    add();
+    const unsubscribe = marker.asObservable().subscribe(() => {
+        if (marker.icon === icon) return;
+        icon = marker.icon;
+        add();
+    });
+    return () => {
+        unsubscribe();
+        bubbleCollector.remove(marker.id);
+    };
+}
 
 interface InfoBubbleStyleProps {
     bubbleColor?: string;
@@ -68,28 +111,25 @@ export function InfoBubble(props: InfoBubbleProps) {
     );
 
     useEffect(() => {
-        const entry: InfoBubbleEntry = marker
-            ? {
-                  id: marker.id,
-                  markerId: marker.id,
-                  positionProvider: () => marker.position,
-                  // A marker with no explicit icon is rendered with the default
-                  // pin (48px, anchored at its bottom tip). Resolve null to that
-                  // same default so the bubble is offset by the pin's real size
-                  // instead of collapsing to a zero-size icon and overlapping the
-                  // marker.
-                  icon: marker.icon ?? createDefaultIcon(),
-                  tailOffset: { x: 0.5, y: 1.0 },
-                  content,
-              }
-            : {
-                  id: generatedId,
-                  markerId: null,
-                  positionProvider: () => position!,
-                  icon: null,
-                  tailOffset: { x: 0.5, y: 1.0 },
-                  content,
-              };
+        if (marker) {
+            return followMarker(bubbleCollector, marker, (icon) => ({
+                id: marker.id,
+                markerId: marker.id,
+                positionProvider: () => marker.position,
+                icon,
+                tailOffset: { x: 0.5, y: 1.0 },
+                content,
+            }));
+        }
+
+        const entry: InfoBubbleEntry = {
+            id: generatedId,
+            markerId: null,
+            positionProvider: () => position!,
+            icon: null,
+            tailOffset: { x: 0.5, y: 1.0 },
+            content,
+        };
         bubbleCollector.add(entry);
         return () => {
             bubbleCollector.remove(entry.id);
@@ -111,22 +151,14 @@ export function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCus
     const { bubbleCollector } = useMapViewScope();
 
     useEffect(() => {
-        const entry: InfoBubbleEntry = {
+        return followMarker(bubbleCollector, marker, (icon) => ({
             id: marker.id,
             markerId: marker.id,
             positionProvider: () => marker.position,
-            // A marker with no explicit icon is rendered with the default pin
-            // (48px, anchored at its bottom tip). Resolve null to that same
-            // default so the bubble is offset by the pin's real size instead of
-            // collapsing to a zero-size icon and overlapping the marker.
-            icon: marker.icon ?? createDefaultIcon(),
+            icon,
             tailOffset,
             content: children,
-        };
-        bubbleCollector.add(entry);
-        return () => {
-            bubbleCollector.remove(entry.id);
-        };
+        }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [marker, tailOffset]);
 
