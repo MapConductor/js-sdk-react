@@ -15,8 +15,11 @@
  * Lengths need a unit. The defaults are fallbacks rather than declarations, so a
  * value set on any ancestor — `:root` included — reaches the bubble.
  *
- * The rules sit inside `:where()`, which has no specificity: any selector an app
- * writes wins, wherever its stylesheet loads.
+ * The rules are one class strong (`.mc-info-bubble`), and the stylesheet goes
+ * first in <head>. So an app's own class wins — same strength, later — while a
+ * reset such as `* { margin: 0; padding: 0 }` does not: `*` has no specificity,
+ * and when these rules were inside `:where()` (none either) a reset loaded
+ * after them took the bubble's padding and the margin its tail hangs in.
  */
 
 const BASE_ID = 'mapconductor-info-bubble';
@@ -33,7 +36,7 @@ const TAIL = 'var(--mc-bubble-tail-size, 8px)';
 const TAIL_FILL = `max(0px, calc(${TAIL} - 1.236 * ${BORDER_WIDTH}))`;
 
 const BASE_CSS = `
-:where(.mc-info-bubble) {
+.mc-info-bubble {
     position: relative;
     box-sizing: border-box;
     margin: 0 0 ${TAIL};
@@ -42,8 +45,8 @@ const BASE_CSS = `
     border: ${BORDER_WIDTH} solid ${BORDER_COLOR};
     border-radius: var(--mc-bubble-corner-radius, 4px);
 }
-:where(.mc-info-bubble)::before,
-:where(.mc-info-bubble)::after {
+.mc-info-bubble::before,
+.mc-info-bubble::after {
     content: '';
     position: absolute;
     left: 50%;
@@ -55,14 +58,14 @@ const BASE_CSS = `
     transform: translateX(-50%);
     pointer-events: none;
 }
-:where(.mc-info-bubble)::before {
+.mc-info-bubble::before {
     top: calc(100% + ${BORDER_WIDTH});
     border-top-width: ${TAIL};
     border-left-width: calc(${TAIL} / 2);
     border-right-width: calc(${TAIL} / 2);
     border-top-color: ${BORDER_COLOR};
 }
-:where(.mc-info-bubble)::after {
+.mc-info-bubble::after {
     top: 100%;
     border-top-width: ${TAIL_FILL};
     border-left-width: calc(${TAIL_FILL} / 2);
