@@ -37,6 +37,7 @@ export interface GroundImageBoundsProps {
     imageUrl: string;
     opacity?: number;
     tileSize?: number;
+    clickable?: boolean;
     id?: string | null;
     extra?: Serializable | null;
     onClick?: OnGroundImageEventHandler | null;
@@ -71,6 +72,7 @@ function GroundImageFromBoundsProps(props: GroundImageBoundsProps): React.ReactE
             imageUrl: props.imageUrl,
             opacity: props.opacity ?? 0.5,
             tileSize: props.tileSize,
+            clickable: props.clickable ?? true,
             id: props.id,
             extra: props.extra ?? null,
             onClick: props.onClick ?? null,
@@ -82,6 +84,7 @@ function GroundImageFromBoundsProps(props: GroundImageBoundsProps): React.ReactE
     useEffect(() => { state.imageUrl = props.imageUrl; }, [state, props.imageUrl]);
     useEffect(() => { state.opacity = props.opacity ?? 0.5; }, [state, props.opacity]);
     useEffect(() => { state.tileSize = props.tileSize ?? GROUND_IMAGE_DEFAULT_TILE_SIZE; }, [state, props.tileSize]);
+    useEffect(() => { state.clickable = props.clickable ?? true; }, [state, props.clickable]);
     useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
     useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);
 

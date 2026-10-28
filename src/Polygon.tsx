@@ -40,6 +40,7 @@ interface PolygonCommonProps {
     strokeWidth?: number;
     fillColor?: string;
     geodesic?: boolean;
+    clickable?: boolean;
     zIndex?: number;
     extra?: Serializable | null;
     onClick?: OnPolygonEventHandler | null;
@@ -99,6 +100,7 @@ function PolygonFromPointsProps(props: PolygonPointsProps): React.ReactElement |
             strokeWidth: props.strokeWidth ?? 1,
             fillColor: props.fillColor ?? 'transparent',
             geodesic: props.geodesic ?? false,
+            clickable: props.clickable ?? true,
             zIndex: props.zIndex ?? 0,
             extra: props.extra ?? null,
             onClick: props.onClick ?? null,
@@ -112,6 +114,7 @@ function PolygonFromPointsProps(props: PolygonPointsProps): React.ReactElement |
     useEffect(() => { state.strokeWidth = props.strokeWidth ?? 1; }, [state, props.strokeWidth]);
     useEffect(() => { state.fillColor = props.fillColor ?? 'transparent'; }, [state, props.fillColor]);
     useEffect(() => { state.geodesic = props.geodesic ?? false; }, [state, props.geodesic]);
+    useEffect(() => { state.clickable = props.clickable ?? true; }, [state, props.clickable]);
     useEffect(() => { state.zIndex = props.zIndex ?? 0; }, [state, props.zIndex]);
     useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);
     useEffect(() => { state.onClick = props.onClick ?? null; }, [state, props.onClick]);

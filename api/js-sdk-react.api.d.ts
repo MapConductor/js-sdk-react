@@ -81,6 +81,7 @@ interface PolygonCommonProps {
     strokeWidth?: number;
     fillColor?: string;
     geodesic?: boolean;
+    clickable?: boolean;
     zIndex?: number;
     extra?: Serializable | null;
     onClick?: OnPolygonEventHandler | null;
@@ -117,6 +118,7 @@ interface PolylineCommonProps {
     strokeColor?: string;
     strokeWidth?: number;
     geodesic?: boolean;
+    clickable?: boolean;
     zIndex?: number;
     extra?: Serializable | null;
     onClick?: OnPolylineEventHandler | null;
@@ -152,6 +154,7 @@ interface GroundImageBoundsProps {
     imageUrl: string;
     opacity?: number;
     tileSize?: number;
+    clickable?: boolean;
     id?: string | null;
     extra?: Serializable | null;
     onClick?: OnGroundImageEventHandler | null;
@@ -196,6 +199,11 @@ interface MapAttributionOverlayProps {
 }
 declare function MapAttributionOverlay({ scope, camera, designAttributionRules, style, }: MapAttributionOverlayProps): React.JSX.Element | null;
 
+/**
+ * How the bubble looks. Each one left out falls back to its `--mc-bubble-*`
+ * custom property, so it can be set from CSS instead; one given here wins over
+ * the CSS. Lengths are px.
+ */
 interface InfoBubbleStyleProps {
     bubbleColor?: string;
     borderColor?: string;
@@ -204,6 +212,12 @@ interface InfoBubbleStyleProps {
     contentPadding?: number;
     cornerRadius?: number;
     tailSize?: number;
+    /**
+     * Web only. Added to the bubble's element, next to `mc-info-bubble`. The
+     * children sit directly inside it, so `.my-bubble h1` reaches them and
+     * `color` set on the class is inherited.
+     */
+    className?: string;
     children: ReactNode;
 }
 interface InfoBubbleMarkerProps extends InfoBubbleStyleProps {
@@ -231,10 +245,16 @@ declare function InfoBubble(props: InfoBubbleProps): null;
 interface InfoBubbleCustomProps {
     marker: MarkerState;
     tailOffset: Offset;
+    /**
+     * Web only. Put on the element that holds the children, as
+     * `mc-info-bubble-custom <className>`. The SDK gives that element no look of
+     * its own; it is there so the content can be styled from one class.
+     */
+    className?: string;
     children: ReactNode;
 }
 /** Registers a fully custom bubble content. Mirrors `InfoBubbleCompose.kt#InfoBubbleCustom`. */
-declare function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCustomProps): null;
+declare function InfoBubbleCustom({ marker, tailOffset, className, children }: InfoBubbleCustomProps): null;
 
 interface InfoBubbleOverlayProps {
     /** Screen pixel offset of the anchor point (marker position projected to screen). */
@@ -258,16 +278,34 @@ interface InfoBubbleOverlayProps {
  * Mirrors `InfoBubbleOverlay` from `InfoWindowOverlay.kt`.
  */
 
-interface DrawInfoBubbleProps {
+interface InfoBubbleStyleValues {
     bubbleColor?: string;
     borderColor?: string;
     borderWidth?: number;
     contentPadding?: number;
     cornerRadius?: number;
     tailSize?: number;
+}
+
+interface DrawInfoBubbleProps extends InfoBubbleStyleValues {
+    /** Added to the bubble's class list, next to `mc-info-bubble`. */
+    className?: string;
     children: ReactNode;
 }
-declare function DrawInfoBubble({ bubbleColor, borderColor, borderWidth, contentPadding, cornerRadius, tailSize, children, }: DrawInfoBubbleProps): React.JSX.Element;
+/**
+ * The bubble itself: one div, its tail drawn by `::before` and `::after`.
+ *
+ * No style attribute anywhere, so an app's stylesheet reaches every part of it.
+ * The look comes from `--mc-bubble-*` custom properties (see infoBubbleStyles);
+ * a prop that is given wins over them, one that is left out leaves them in
+ * charge. The children sit directly inside, so `.my-bubble h1` and
+ * `.my-bubble > h1` both reach them and `color` set on the class is inherited.
+ *
+ * The tail hangs below the box, inside its bottom margin, so the element's
+ * outer box ends at the tail's tip — which is where InfoBubbleOverlay puts the
+ * anchor.
+ */
+declare function DrawInfoBubble({ className, children, ...values }: DrawInfoBubbleProps): React.JSX.Element;
 
 type ResolveScreenOffset = (entry: MarkerAnimationOverlayEntry) => Offset | null | Promise<Offset | null>;
 /**
