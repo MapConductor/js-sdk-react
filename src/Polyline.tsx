@@ -37,6 +37,7 @@ interface PolylineCommonProps {
     strokeColor?: string;
     strokeWidth?: number;
     geodesic?: boolean;
+    clickable?: boolean;
     zIndex?: number;
     extra?: Serializable | null;
     onClick?: OnPolylineEventHandler | null;
@@ -92,6 +93,7 @@ function PolylineFromPointsProps(props: PolylinePointsProps): React.ReactElement
                 strokeColor: props.strokeColor ?? '#000000',
                 strokeWidth: props.strokeWidth ?? 1,
                 geodesic: props.geodesic ?? false,
+                clickable: props.clickable ?? true,
                 zIndex: props.zIndex ?? 0,
                 extra: props.extra ?? null,
                 onClick: props.onClick ?? null,
@@ -102,6 +104,7 @@ function PolylineFromPointsProps(props: PolylinePointsProps): React.ReactElement
             props.strokeColor,
             props.strokeWidth,
             props.geodesic,
+            props.clickable,
             props.zIndex,
             props.extra,
             props.onClick,
