@@ -1,6 +1,6 @@
 {
   "name": "@mapconductor/js-sdk-react",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "React bindings for MapConductor SDK",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -55,7 +55,7 @@
   "author": "MapConductor",
   "license": "Apache-2.0",
   "dependencies": {
-    "@mapconductor/js-sdk-core": "^0.2.0"
+    "@mapconductor/js-sdk-core": "^0.3.0"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
