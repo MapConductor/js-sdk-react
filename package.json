@@ -34,6 +34,8 @@
   },
   "files": [
     "android",
+    "!android/build",
+    "!android/.cxx",
     "ios",
     "MapConductorReactNativeCore.podspec",
     "react-native.config.js",
