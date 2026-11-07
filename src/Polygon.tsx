@@ -101,6 +101,7 @@ function syncPolygonState(target: PolygonState, source: PolygonState): void {
     if (target.zIndex !== source.zIndex) target.zIndex = source.zIndex;
     if (target.extra !== source.extra) target.extra = source.extra;
     if (target.onClick !== source.onClick) target.onClick = source.onClick;
+    if (target.onAdded !== source.onAdded) target.onAdded = source.onAdded;
 }
 
 interface PolygonCommonProps {

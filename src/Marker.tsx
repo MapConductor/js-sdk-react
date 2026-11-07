@@ -101,6 +101,7 @@ function syncMarkerState(target: MarkerState, source: MarkerState): void {
     if (target.onDragEnd !== source.onDragEnd) target.onDragEnd = source.onDragEnd;
     if (target.onAnimateStart !== source.onAnimateStart) target.onAnimateStart = source.onAnimateStart;
     if (target.onAnimateEnd !== source.onAnimateEnd) target.onAnimateEnd = source.onAnimateEnd;
+    if (target.onAdded !== source.onAdded) target.onAdded = source.onAdded;
 }
 
 export interface MarkerPositionProps {
