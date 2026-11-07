@@ -1,5 +1,6 @@
 import { useEffect, useId, type ReactNode } from 'react';
 import { DrawInfoBubble } from './DrawInfoBubble';
+import { useInfoBubbleContentSlot } from './InfoBubbleContentSlot';
 import { useMapViewScope } from '../MapViewScope';
 import type { InfoBubbleEntry } from './InfoBubbleEntry';
 import {
@@ -111,7 +112,9 @@ export function InfoBubble(props: InfoBubbleProps) {
     const { bubbleCollector } = useMapViewScope();
     const generatedId = useId();
 
-    const content = (
+    // The entry keeps one stable element; what it shows is swapped on every
+    // render. See InfoBubbleContentSlot.
+    const content = useInfoBubbleContentSlot(
         <DrawInfoBubble
             bubbleColor={bubbleColor}
             borderColor={borderColor}
@@ -122,9 +125,14 @@ export function InfoBubble(props: InfoBubbleProps) {
             className={className}
         >
             {children}
-        </DrawInfoBubble>
+        </DrawInfoBubble>,
     );
+    const latitude = position?.latitude;
+    const longitude = position?.longitude;
+    const altitude = position?.altitude;
 
+    // Registers the bubble. Only what decides *where* it is re-registers it:
+    // the content and the look follow through `content` without a re-add.
     useEffect(() => {
         if (marker) {
             return followMarker(bubbleCollector, marker, (icon) => ({
@@ -149,8 +157,10 @@ export function InfoBubble(props: InfoBubbleProps) {
         return () => {
             bubbleCollector.remove(entry.id);
         };
+    // A position passed as a fresh object literal each render must not
+    // re-register every render, so it is compared by value.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [marker, position, className]);
+    }, [marker, latitude, longitude, altitude, bubbleCollector, generatedId, content]);
 
     return null;
 }
@@ -170,22 +180,26 @@ interface InfoBubbleCustomProps {
 /** Registers a fully custom bubble content. Mirrors `InfoBubbleCompose.kt#InfoBubbleCustom`. */
 export function InfoBubbleCustom({ marker, tailOffset, className, children }: InfoBubbleCustomProps) {
     const { bubbleCollector } = useMapViewScope();
+    const content = useInfoBubbleContentSlot(
+        <div className={['mc-info-bubble-custom', className].filter(Boolean).join(' ')}>
+            {children}
+        </div>,
+    );
+    const tailX = tailOffset.x;
+    const tailY = tailOffset.y;
 
+    // Content and className follow through `content`; tailOffset is compared
+    // by value so an inline `{ x, y }` does not re-register every render.
     useEffect(() => {
         return followMarker(bubbleCollector, marker, (icon) => ({
             id: marker.id,
             markerId: marker.id,
             positionProvider: () => marker.position,
             icon,
-            tailOffset,
-            content: (
-                <div className={['mc-info-bubble-custom', className].filter(Boolean).join(' ')}>
-                    {children}
-                </div>
-            ),
+            tailOffset: { x: tailX, y: tailY },
+            content,
         }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [marker, tailOffset, className]);
+    }, [marker, tailX, tailY, bubbleCollector, content]);
 
     return null;
 }

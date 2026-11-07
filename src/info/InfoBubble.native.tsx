@@ -1,5 +1,6 @@
 import { useEffect, useId, type ReactNode } from 'react';
 import { DrawInfoBubble } from './DrawInfoBubble.native';
+import { useInfoBubbleContentSlot } from './InfoBubbleContentSlot';
 import { useMapViewScope } from '../MapViewScope.native';
 import type { InfoBubbleEntry } from './InfoBubbleEntry';
 import type { GeoPoint, MarkerState, Offset } from '@mapconductor/js-sdk-core';
@@ -54,7 +55,9 @@ export function InfoBubble(props: InfoBubbleProps) {
   const { bubbleCollector } = useMapViewScope();
   const generatedId = useId();
 
-  const content = (
+  // The entry keeps one stable element; what it shows is swapped on every
+  // render. See InfoBubbleContentSlot.
+  const content = useInfoBubbleContentSlot(
     <DrawInfoBubble
       bubbleColor={bubbleColor}
       borderColor={borderColor}
@@ -64,8 +67,11 @@ export function InfoBubble(props: InfoBubbleProps) {
       tailSize={tailSize}
     >
       {children}
-    </DrawInfoBubble>
+    </DrawInfoBubble>,
   );
+  const latitude = position?.latitude;
+  const longitude = position?.longitude;
+  const altitude = position?.altitude;
 
   useEffect(() => {
     if (marker) {
@@ -103,8 +109,11 @@ export function InfoBubble(props: InfoBubbleProps) {
     return () => {
       bubbleCollector.remove(generatedId);
     };
+    // Only what decides *where* the bubble is re-registers it; content and look
+    // follow through `content`. A position is compared by value so a fresh
+    // object literal each render does not re-register every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [marker, position]);
+  }, [marker, latitude, longitude, altitude, bubbleCollector, generatedId, content]);
 
   return null;
 }
@@ -118,6 +127,9 @@ interface InfoBubbleCustomProps {
 /** Registers a fully custom bubble content. Mirrors `InfoBubbleCompose.kt#InfoBubbleCustom`. */
 export function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCustomProps) {
   const { bubbleCollector } = useMapViewScope();
+  const content = useInfoBubbleContentSlot(children);
+  const tailX = tailOffset.x;
+  const tailY = tailOffset.y;
 
   useEffect(() => {
     const buildEntry = (): InfoBubbleEntry => ({
@@ -125,8 +137,8 @@ export function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCus
       markerId: marker.id,
       positionProvider: () => marker.position,
       icon: marker.icon,
-      tailOffset,
-      content: children,
+      tailOffset: { x: tailX, y: tailY },
+      content,
     });
     bubbleCollector.add(buildEntry());
     // See InfoBubble's identical effect above: re-add on every fingerprint tick so a native
@@ -138,8 +150,7 @@ export function InfoBubbleCustom({ marker, tailOffset, children }: InfoBubbleCus
       unsubscribe();
       bubbleCollector.remove(marker.id);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [marker, tailOffset]);
+  }, [marker, tailX, tailY, bubbleCollector, content]);
 
   return null;
 }
