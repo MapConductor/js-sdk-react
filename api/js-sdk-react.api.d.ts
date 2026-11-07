@@ -75,6 +75,14 @@ interface PolygonStateProps {
     points?: never;
     bounds?: never;
 }
+interface PolygonsProps {
+    states: PolygonState[];
+}
+/**
+ * Efficiently registers many polygons without per-polygon effects.
+ * Mirrors `PolygonComponent.kt#Polygons(states)` and the `<Markers>` collection.
+ */
+declare function Polygons({ states }: PolygonsProps): null;
 interface PolygonCommonProps {
     id?: string | null;
     strokeColor?: string;
@@ -318,5 +326,5 @@ declare function MarkerAnimationLayer({ entries, resolveScreenOffset, }: {
     resolveScreenOffset: ResolveScreenOffset;
 }): React.JSX.Element | null;
 
-export { Circle, DrawInfoBubble, GroundImage, InfoBubble, InfoBubbleCustom, InfoBubbleOverlay, MapAttributionOverlay, MapViewScope, Marker, MarkerAnimationLayer, Markers, Polygon, Polyline, RasterLayer };
+export { Circle, DrawInfoBubble, GroundImage, InfoBubble, InfoBubbleCustom, InfoBubbleOverlay, MapAttributionOverlay, MapViewScope, Marker, MarkerAnimationLayer, Markers, Polygon, Polygons, Polyline, RasterLayer };
 export type { CirclePositionProps, CircleProps, CircleStateProps, GroundImageBoundsProps, GroundImageProps, GroundImageStateProps, InfoBubbleProps, MapAttributionOverlayProps, MarkerPositionProps, MarkerProps, MarkerStateProps, PolygonBoundsProps, PolygonPointsProps, PolygonProps, PolygonStateProps, PolylineBoundsProps, PolylinePointsProps, PolylineProps, PolylineStateProps, RasterLayerProps, RasterLayerSourceProps, RasterLayerStateProps };
