@@ -70,7 +70,7 @@ function GroundImageFromBoundsProps(props: GroundImageBoundsProps): React.ReactE
         stateRef.current = createGroundImageState({
             bounds: props.bounds,
             imageUrl: props.imageUrl,
-            opacity: props.opacity ?? 0.5,
+            opacity: props.opacity ?? 1.0,
             tileSize: props.tileSize,
             clickable: props.clickable ?? true,
             id: props.id,
@@ -82,7 +82,7 @@ function GroundImageFromBoundsProps(props: GroundImageBoundsProps): React.ReactE
 
     useEffect(() => { state.bounds = props.bounds; }, [state, props.bounds]);
     useEffect(() => { state.imageUrl = props.imageUrl; }, [state, props.imageUrl]);
-    useEffect(() => { state.opacity = props.opacity ?? 0.5; }, [state, props.opacity]);
+    useEffect(() => { state.opacity = props.opacity ?? 1.0; }, [state, props.opacity]);
     useEffect(() => { state.tileSize = props.tileSize ?? GROUND_IMAGE_DEFAULT_TILE_SIZE; }, [state, props.tileSize]);
     useEffect(() => { state.clickable = props.clickable ?? true; }, [state, props.clickable]);
     useEffect(() => { state.extra = props.extra ?? null; }, [state, props.extra]);

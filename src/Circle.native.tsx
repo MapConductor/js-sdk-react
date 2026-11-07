@@ -67,7 +67,7 @@ function CircleFromPositionProps(props: CirclePositionProps): React.ReactElement
       radiusMeters: props.radiusMeters,
       id: props.id,
       strokeColor: props.strokeColor ?? '#FF0000',
-      strokeWidth: props.strokeWidth ?? 2,
+      strokeWidth: props.strokeWidth ?? 1,
       fillColor: props.fillColor ?? 'rgba(255,255,255,0.5)',
       zIndex: props.zIndex ?? null,
       geodesic: props.geodesic ?? true,
@@ -88,7 +88,7 @@ function CircleFromPositionProps(props: CirclePositionProps): React.ReactElement
     state.strokeColor = props.strokeColor ?? '#FF0000';
   }, [state, props.strokeColor]);
   useEffect(() => {
-    state.strokeWidth = props.strokeWidth ?? 2;
+    state.strokeWidth = props.strokeWidth ?? 1;
   }, [state, props.strokeWidth]);
   useEffect(() => {
     state.fillColor = props.fillColor ?? 'rgba(255,255,255,0.5)';
