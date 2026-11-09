@@ -121,6 +121,19 @@ interface PolylineStateProps {
     points?: never;
     bounds?: never;
 }
+interface PolylinesProps {
+    states: readonly PolylineState[];
+}
+/**
+ * Efficiently registers many polylines without per-polyline effects.
+ * Mirrors `PolylineComponent.kt#Polylines(states)` and `<Polygons>`.
+ *
+ * Only this instance's ids are added and removed, so several `<Polylines>` and
+ * `<Polyline>` can share one map; unmounting removes this instance's polylines
+ * and no others. A state whose id stays from one list to the next keeps its
+ * first object, which takes the new values in place.
+ */
+declare function Polylines({ states }: PolylinesProps): null;
 interface PolylineCommonProps {
     id?: string | null;
     strokeColor?: string;
@@ -326,5 +339,5 @@ declare function MarkerAnimationLayer({ entries, resolveScreenOffset, }: {
     resolveScreenOffset: ResolveScreenOffset;
 }): React.JSX.Element | null;
 
-export { Circle, DrawInfoBubble, GroundImage, InfoBubble, InfoBubbleCustom, InfoBubbleOverlay, MapAttributionOverlay, MapViewScope, Marker, MarkerAnimationLayer, Markers, Polygon, Polygons, Polyline, RasterLayer };
+export { Circle, DrawInfoBubble, GroundImage, InfoBubble, InfoBubbleCustom, InfoBubbleOverlay, MapAttributionOverlay, MapViewScope, Marker, MarkerAnimationLayer, Markers, Polygon, Polygons, Polyline, Polylines, RasterLayer };
 export type { CirclePositionProps, CircleProps, CircleStateProps, GroundImageBoundsProps, GroundImageProps, GroundImageStateProps, InfoBubbleProps, MapAttributionOverlayProps, MarkerPositionProps, MarkerProps, MarkerStateProps, PolygonBoundsProps, PolygonPointsProps, PolygonProps, PolygonStateProps, PolylineBoundsProps, PolylinePointsProps, PolylineProps, PolylineStateProps, RasterLayerProps, RasterLayerSourceProps, RasterLayerStateProps };
