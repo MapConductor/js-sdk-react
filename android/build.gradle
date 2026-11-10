@@ -18,6 +18,11 @@ apply plugin: "org.jetbrains.kotlin.plugin.compose"
 android {
   namespace "com.mapconductor.react"
   compileSdk = rootProject.ext.has("compileSdkVersion") ? rootProject.ext.compileSdkVersion : 35
+  // Build the C++ bridge with the app's NDK. Left unset, AGP picks its own default, and an app
+  // that pins a different version has to install a second NDK just for this module.
+  if (rootProject.ext.has("ndkVersion")) {
+    ndkVersion = rootProject.ext.ndkVersion
+  }
 
   defaultConfig {
     minSdk = rootProject.ext.has("minSdkVersion") ? rootProject.ext.minSdkVersion : 24
