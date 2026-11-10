@@ -34,6 +34,76 @@ function PolygonWithState({ state }: PolygonStateProps): null {
     return null;
 }
 
+interface PolygonsProps {
+    states: PolygonState[];
+}
+
+/**
+ * Efficiently registers many polygons without per-polygon effects.
+ * Mirrors `PolygonComponent.kt#Polygons(states)` and the `<Markers>` collection.
+ */
+export function Polygons({ states }: PolygonsProps): null {
+    const { polygonCollector } = useMapViewScope();
+    const stableStatesRef = useRef<Map<string, PolygonState>>(new Map());
+
+    useEffect(() => {
+        polygonCollector.batchChanges(() => {
+            const nextIds = new Set<string>();
+            const added: PolygonState[] = [];
+            for (const state of states) {
+                nextIds.add(state.id);
+                const stableState = stableStatesRef.current.get(state.id);
+                if (!stableState) {
+                    if (state.holes.length > 1) unionHolesInPlace(state);
+                    stableStatesRef.current.set(state.id, state);
+                    added.push(state);
+                } else {
+                    syncPolygonState(stableState, state);
+                }
+            }
+
+            // Remove only the ids this <Polygons> instance owns, as <Markers> does, so
+            // several <Polygons>/<Polygon> can share one map's collector.
+            const removedIds: string[] = [];
+            for (const id of stableStatesRef.current.keys()) {
+                if (!nextIds.has(id)) removedIds.push(id);
+            }
+            for (const id of removedIds) stableStatesRef.current.delete(id);
+
+            if (added.length > 0 || removedIds.length > 0) {
+                polygonCollector.applyDiff(added, removedIds);
+            }
+        });
+    }, [states, polygonCollector]);
+
+    useEffect(() => {
+        const ownStates = stableStatesRef.current;
+        return () => {
+            // Remove only our own polygons on unmount, never the whole collection.
+            polygonCollector.applyDiff([], [...ownStates.keys()]);
+            ownStates.clear();
+        };
+    }, [polygonCollector]);
+
+    return null;
+}
+
+function syncPolygonState(target: PolygonState, source: PolygonState): void {
+    if (target.points !== source.points) target.points = source.points;
+    // Holes replaced later are unioned by the renderer's resolveHoles(), as with
+    // vertex drags; unioning here would make them differ from source every render.
+    if (target.holes !== source.holes) target.holes = source.holes;
+    if (target.strokeColor !== source.strokeColor) target.strokeColor = source.strokeColor;
+    if (target.strokeWidth !== source.strokeWidth) target.strokeWidth = source.strokeWidth;
+    if (target.fillColor !== source.fillColor) target.fillColor = source.fillColor;
+    if (target.geodesic !== source.geodesic) target.geodesic = source.geodesic;
+    if (target.clickable !== source.clickable) target.clickable = source.clickable;
+    if (target.zIndex !== source.zIndex) target.zIndex = source.zIndex;
+    if (target.extra !== source.extra) target.extra = source.extra;
+    if (target.onClick !== source.onClick) target.onClick = source.onClick;
+    if (target.onAdded !== source.onAdded) target.onAdded = source.onAdded;
+}
+
 interface PolygonCommonProps {
     id?: string | null;
     strokeColor?: string;
