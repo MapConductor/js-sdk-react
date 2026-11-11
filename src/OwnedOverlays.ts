@@ -22,7 +22,7 @@ export class OwnedOverlays<S extends { id: string }> {
     }
 
     /** Makes the owned set `states`. */
-    set(states: readonly S[]): void {
+    set(states: Iterable<S>): void {
         this.collector.batchChanges(() => {
             const nextIds = new Set<string>();
             const added: S[] = [];

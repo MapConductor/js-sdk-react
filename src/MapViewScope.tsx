@@ -4,6 +4,7 @@ import {
   type MarkerState,
   MarkerOverlay,
   type CircleState,
+  circleMutations,
   CircleOverlay,
   type PolylineState,
   PolylineOverlay,
@@ -22,7 +23,7 @@ import { MarkerAnimationStore } from './marker/MarkerAnimationStore';
 export class MapViewScope {
     readonly markerCollector = new OverlayCollector<MarkerState>();
     readonly markerAnimationStore = new MarkerAnimationStore();
-    readonly circleCollector = new OverlayCollector<CircleState>();
+    readonly circleCollector = new OverlayCollector<CircleState>(circleMutations);
     readonly polylineCollector = new OverlayCollector<PolylineState>();
     readonly polygonCollector = new OverlayCollector<PolygonState>();
     readonly groundImageCollector = new OverlayCollector<GroundImageState>();

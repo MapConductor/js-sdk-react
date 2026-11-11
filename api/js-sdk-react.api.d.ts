@@ -48,6 +48,20 @@ interface CircleStateProps {
     center?: never;
     radiusMeters?: never;
 }
+interface CirclesProps {
+    /** An array or a collection that can be iterated again on remount. */
+    states: Iterable<CircleState>;
+}
+/**
+ * Efficiently registers many circles without per-circle effects.
+ * Mirrors `CircleCompose.kt#Circles(states)`, `<Polylines>` and `<Polygons>`.
+ *
+ * Only this instance's ids are added and removed, so several `<Circles>` and
+ * `<Circle>` can share one map; unmounting removes this instance's circles
+ * and no others. A state whose id stays from one list to the next keeps its
+ * first object, which takes the new values in place.
+ */
+declare function Circles({ states }: CirclesProps): null;
 interface CirclePositionProps {
     state?: never;
     center: GeoPoint;
@@ -339,5 +353,5 @@ declare function MarkerAnimationLayer({ entries, resolveScreenOffset, }: {
     resolveScreenOffset: ResolveScreenOffset;
 }): React.JSX.Element | null;
 
-export { Circle, DrawInfoBubble, GroundImage, InfoBubble, InfoBubbleCustom, InfoBubbleOverlay, MapAttributionOverlay, MapViewScope, Marker, MarkerAnimationLayer, Markers, Polygon, Polygons, Polyline, Polylines, RasterLayer };
+export { Circle, Circles, DrawInfoBubble, GroundImage, InfoBubble, InfoBubbleCustom, InfoBubbleOverlay, MapAttributionOverlay, MapViewScope, Marker, MarkerAnimationLayer, Markers, Polygon, Polygons, Polyline, Polylines, RasterLayer };
 export type { CirclePositionProps, CircleProps, CircleStateProps, GroundImageBoundsProps, GroundImageProps, GroundImageStateProps, InfoBubbleProps, MapAttributionOverlayProps, MarkerPositionProps, MarkerProps, MarkerStateProps, PolygonBoundsProps, PolygonPointsProps, PolygonProps, PolygonStateProps, PolylineBoundsProps, PolylinePointsProps, PolylineProps, PolylineStateProps, RasterLayerProps, RasterLayerSourceProps, RasterLayerStateProps };
