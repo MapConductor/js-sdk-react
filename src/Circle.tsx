@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useMapViewScope } from './MapViewScope';
+import { OwnedOverlays } from './OwnedOverlays';
 import {
   createCircleState,
   type CircleState,
@@ -28,6 +29,47 @@ function CircleWithState({ state }: CircleStateProps): null {
     }, [state.id, circleCollector]);
 
     return null;
+}
+
+interface CirclesProps {
+    /** An array or a collection that can be iterated again on remount. */
+    states: Iterable<CircleState>;
+}
+
+/**
+ * Efficiently registers many circles without per-circle effects.
+ * Mirrors `CircleCompose.kt#Circles(states)`, `<Polylines>` and `<Polygons>`.
+ *
+ * Only this instance's ids are added and removed, so several `<Circles>` and
+ * `<Circle>` can share one map; unmounting removes this instance's circles
+ * and no others. A state whose id stays from one list to the next keeps its
+ * first object, which takes the new values in place.
+ */
+export function Circles({ states }: CirclesProps): null {
+    const { circleCollector } = useMapViewScope();
+    const owned = useMemo(() => new OwnedOverlays(circleCollector, syncCircleState), [circleCollector]);
+
+    useEffect(() => {
+        owned.set(states);
+    }, [states, owned]);
+
+    useEffect(() => () => owned.clear(), [owned]);
+
+    return null;
+}
+
+function syncCircleState(target: CircleState, source: CircleState): void {
+    if (target.center !== source.center) target.center = source.center;
+    if (target.radiusMeters !== source.radiusMeters) target.radiusMeters = source.radiusMeters;
+    if (target.strokeColor !== source.strokeColor) target.strokeColor = source.strokeColor;
+    if (target.strokeWidth !== source.strokeWidth) target.strokeWidth = source.strokeWidth;
+    if (target.fillColor !== source.fillColor) target.fillColor = source.fillColor;
+    if (target.geodesic !== source.geodesic) target.geodesic = source.geodesic;
+    if (target.clickable !== source.clickable) target.clickable = source.clickable;
+    if (target.zIndex !== source.zIndex) target.zIndex = source.zIndex;
+    if (target.extra !== source.extra) target.extra = source.extra;
+    if (target.onClick !== source.onClick) target.onClick = source.onClick;
+    if (target.onAdded !== source.onAdded) target.onAdded = source.onAdded;
 }
 
 export interface CirclePositionProps {
