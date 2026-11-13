@@ -6,18 +6,44 @@ import React__default, { CSSProperties, ReactNode } from 'react';
 import { MarkerState, GeoPoint, MarkerIcon, MarkerAnimation, Serializable, OnMarkerEventHandler, CircleState, OnCircleEventHandler, PolygonState, OnPolygonEventHandler, GeoRectBounds, PolylineState, OnPolylineEventHandler, GroundImageState, OnGroundImageEventHandler, RasterLayerState, RasterLayerSource, MapCameraPosition, AttributionRule, Offset, MarkerAnimationOverlayEntry } from '@mapconductor/js-sdk-core';
 export { I as InfoBubbleEntry, M as MarkerAnimationStore } from './MarkerAnimationStore-Dm7KU-2L.js';
 
+/**
+ * How far a collection (`<Markers>`, `<Circles>`, `<Polylines>`, `<Polygons>`)
+ * is with putting its states on the map: for a list of thousands, the screen
+ * shows nothing until they are drawn, and these say that work is going on.
+ *
+ * "On the map" is what each state's `onAdded` means: drawn natively, or, for a
+ * state drawn in tiles, its tiles handed to the map (their images may still be
+ * loading).
+ *
+ * - `onAddStart(total)`: a list brought states that are not on the map yet;
+ *   `total` is how many.
+ * - `onAddProgress(added, total)`: how many of them are on the map so far, at
+ *   most every 100 ms, and once more with `added === total` before the end.
+ * - `onAddEnd(total)`: all of them are on the map. A state taken out of the
+ *   list before it got there no longer counts against the end.
+ *
+ * A list that brings new states while an earlier one is still being added
+ * starts over: a new `onAddStart` with only the new states, and no `onAddEnd`
+ * for the earlier list. A list that only updates or removes states calls nothing.
+ */
+interface AddProgressCallbacks {
+    onAddStart?: (total: number) => void;
+    onAddProgress?: (added: number, total: number) => void;
+    onAddEnd?: (total: number) => void;
+}
+
 interface MarkerStateProps {
     state: MarkerState;
     position?: never;
 }
-interface MarkersProps {
+interface MarkersProps extends AddProgressCallbacks {
     states: MarkerState[];
 }
 /**
  * Efficiently registers many markers without per-marker effects.
  * Mirrors `MarkerCompose.kt#Markers(states)`.
  */
-declare function Markers({ states }: MarkersProps): null;
+declare function Markers({ states, onAddStart, onAddProgress, onAddEnd }: MarkersProps): null;
 interface MarkerPositionProps {
     state?: never;
     position: GeoPoint;
@@ -48,7 +74,7 @@ interface CircleStateProps {
     center?: never;
     radiusMeters?: never;
 }
-interface CirclesProps {
+interface CirclesProps extends AddProgressCallbacks {
     /** An array or a collection that can be iterated again on remount. */
     states: Iterable<CircleState>;
 }
@@ -61,7 +87,7 @@ interface CirclesProps {
  * and no others. A state whose id stays from one list to the next keeps its
  * first object, which takes the new values in place.
  */
-declare function Circles({ states }: CirclesProps): null;
+declare function Circles({ states, onAddStart, onAddProgress, onAddEnd }: CirclesProps): null;
 interface CirclePositionProps {
     state?: never;
     center: GeoPoint;
@@ -89,14 +115,14 @@ interface PolygonStateProps {
     points?: never;
     bounds?: never;
 }
-interface PolygonsProps {
+interface PolygonsProps extends AddProgressCallbacks {
     states: PolygonState[];
 }
 /**
  * Efficiently registers many polygons without per-polygon effects.
  * Mirrors `PolygonComponent.kt#Polygons(states)` and the `<Markers>` collection.
  */
-declare function Polygons({ states }: PolygonsProps): null;
+declare function Polygons({ states, onAddStart, onAddProgress, onAddEnd }: PolygonsProps): null;
 interface PolygonCommonProps {
     id?: string | null;
     strokeColor?: string;
@@ -135,7 +161,7 @@ interface PolylineStateProps {
     points?: never;
     bounds?: never;
 }
-interface PolylinesProps {
+interface PolylinesProps extends AddProgressCallbacks {
     states: readonly PolylineState[];
 }
 /**
@@ -147,7 +173,7 @@ interface PolylinesProps {
  * and no others. A state whose id stays from one list to the next keeps its
  * first object, which takes the new values in place.
  */
-declare function Polylines({ states }: PolylinesProps): null;
+declare function Polylines({ states, onAddStart, onAddProgress, onAddEnd }: PolylinesProps): null;
 interface PolylineCommonProps {
     id?: string | null;
     strokeColor?: string;
@@ -354,4 +380,4 @@ declare function MarkerAnimationLayer({ entries, resolveScreenOffset, }: {
 }): React.JSX.Element | null;
 
 export { Circle, Circles, DrawInfoBubble, GroundImage, InfoBubble, InfoBubbleCustom, InfoBubbleOverlay, MapAttributionOverlay, MapViewScope, Marker, MarkerAnimationLayer, Markers, Polygon, Polygons, Polyline, Polylines, RasterLayer };
-export type { CirclePositionProps, CircleProps, CircleStateProps, GroundImageBoundsProps, GroundImageProps, GroundImageStateProps, InfoBubbleProps, MapAttributionOverlayProps, MarkerPositionProps, MarkerProps, MarkerStateProps, PolygonBoundsProps, PolygonPointsProps, PolygonProps, PolygonStateProps, PolylineBoundsProps, PolylinePointsProps, PolylineProps, PolylineStateProps, RasterLayerProps, RasterLayerSourceProps, RasterLayerStateProps };
+export type { AddProgressCallbacks, CirclePositionProps, CircleProps, CircleStateProps, GroundImageBoundsProps, GroundImageProps, GroundImageStateProps, InfoBubbleProps, MapAttributionOverlayProps, MarkerPositionProps, MarkerProps, MarkerStateProps, PolygonBoundsProps, PolygonPointsProps, PolygonProps, PolygonStateProps, PolylineBoundsProps, PolylinePointsProps, PolylineProps, PolylineStateProps, RasterLayerProps, RasterLayerSourceProps, RasterLayerStateProps };

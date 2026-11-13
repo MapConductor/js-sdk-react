@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useMapViewScope } from './MapViewScope';
 import { OwnedOverlays } from './OwnedOverlays';
+import { useAddProgress, type AddProgressCallbacks } from './AddProgress';
 import {
   createCircleState,
   type CircleState,
@@ -31,7 +32,7 @@ function CircleWithState({ state }: CircleStateProps): null {
     return null;
 }
 
-interface CirclesProps {
+interface CirclesProps extends AddProgressCallbacks {
     /** An array or a collection that can be iterated again on remount. */
     states: Iterable<CircleState>;
 }
@@ -45,13 +46,16 @@ interface CirclesProps {
  * and no others. A state whose id stays from one list to the next keeps its
  * first object, which takes the new values in place.
  */
-export function Circles({ states }: CirclesProps): null {
+export function Circles({ states, onAddStart, onAddProgress, onAddEnd }: CirclesProps): null {
     const { circleCollector } = useMapViewScope();
     const owned = useMemo(() => new OwnedOverlays(circleCollector, syncCircleState), [circleCollector]);
 
+    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd });
+
     useEffect(() => {
-        owned.set(states);
-    }, [states, owned]);
+        const { added, removedIds } = owned.set(states);
+        trackAdd(added, removedIds);
+    }, [states, owned, trackAdd]);
 
     useEffect(() => () => owned.clear(), [owned]);
 

@@ -21,8 +21,9 @@ export class OwnedOverlays<S extends { id: string }> {
         this.sync = sync;
     }
 
-    /** Makes the owned set `states`. */
-    set(states: Iterable<S>): void {
+    /** Makes the owned set `states`; returns the states it added and the ids it removed. */
+    set(states: Iterable<S>): { added: S[]; removedIds: string[] } {
+        let result: { added: S[]; removedIds: string[] } = { added: [], removedIds: [] };
         this.collector.batchChanges(() => {
             const nextIds = new Set<string>();
             const added: S[] = [];
@@ -42,7 +43,9 @@ export class OwnedOverlays<S extends { id: string }> {
             }
             for (const id of removedIds) this.owned.delete(id);
             if (added.length > 0 || removedIds.length > 0) this.collector.applyDiff(added, removedIds);
+            result = { added, removedIds };
         });
+        return result;
     }
 
     /** Removes every overlay this set added, and nothing else. */
