@@ -60,7 +60,7 @@ function GroundImageFromBoundsProps(
     stateRef.current = createGroundImageState({
       bounds: props.bounds,
       imageUrl: props.imageUrl,
-      opacity: props.opacity ?? 0.5,
+      opacity: props.opacity ?? 1.0,
       tileSize: props.tileSize,
       id: props.id,
       extra: props.extra ?? null,
@@ -76,7 +76,7 @@ function GroundImageFromBoundsProps(
     if (state.imageUrl !== props.imageUrl) state.imageUrl = props.imageUrl;
   }, [state, props.imageUrl]);
   useEffect(() => {
-    const opacity = props.opacity ?? 0.5;
+    const opacity = props.opacity ?? 1.0;
     if (state.opacity !== opacity) state.opacity = opacity;
   }, [state, props.opacity]);
   useEffect(() => {

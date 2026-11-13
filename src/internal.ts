@@ -12,6 +12,8 @@ export { useMapViewScope } from './MapViewScope';
 export { useCollectAndRenderOverlays } from './CollectAndRenderOverlays';
 export { useCameraRestriction } from './hooks/useCameraRestriction';
 export { useMapUISettings } from './hooks/useMapUISettings';
+export { usePolylineTilingOptions } from './hooks/usePolylineTilingOptions';
+export { useCircleTilingOptions } from './hooks/useCircleTilingOptions';
 export { useMarkerRenderingSupport } from './hooks/useMarkerRenderingSupport';
 export { useMapViewStyle } from './hooks/useMapViewStyle';
 export { useVectorStyleMutationSupport } from './hooks/useVectorStyleMutationSupport';

@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useMapViewScope } from './MapViewScope';
+import { OwnedOverlays } from './OwnedOverlays';
+import { useAddProgress, type AddProgressCallbacks } from './AddProgress';
 import {
   createPolylineState,
   type PolylineState,
@@ -30,6 +32,47 @@ function PolylineWithState({ state }: PolylineStateProps): null {
     }, [state.id, polylineCollector]);
 
     return null;
+}
+
+interface PolylinesProps extends AddProgressCallbacks {
+    states: readonly PolylineState[];
+}
+
+/**
+ * Efficiently registers many polylines without per-polyline effects.
+ * Mirrors `PolylineComponent.kt#Polylines(states)` and `<Polygons>`.
+ *
+ * Only this instance's ids are added and removed, so several `<Polylines>` and
+ * `<Polyline>` can share one map; unmounting removes this instance's polylines
+ * and no others. A state whose id stays from one list to the next keeps its
+ * first object, which takes the new values in place.
+ */
+export function Polylines({ states, onAddStart, onAddProgress, onAddEnd }: PolylinesProps): null {
+    const { polylineCollector } = useMapViewScope();
+    const owned = useMemo(() => new OwnedOverlays(polylineCollector, syncPolylineState), [polylineCollector]);
+
+    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd });
+
+    useEffect(() => {
+        const { added, removedIds } = owned.set(states);
+        trackAdd(added, removedIds);
+    }, [states, owned, trackAdd]);
+
+    useEffect(() => () => owned.clear(), [owned]);
+
+    return null;
+}
+
+function syncPolylineState(target: PolylineState, source: PolylineState): void {
+    if (target.points !== source.points) target.points = source.points;
+    if (target.strokeColor !== source.strokeColor) target.strokeColor = source.strokeColor;
+    if (target.strokeWidth !== source.strokeWidth) target.strokeWidth = source.strokeWidth;
+    if (target.geodesic !== source.geodesic) target.geodesic = source.geodesic;
+    if (target.clickable !== source.clickable) target.clickable = source.clickable;
+    if (target.zIndex !== source.zIndex) target.zIndex = source.zIndex;
+    if (target.extra !== source.extra) target.extra = source.extra;
+    if (target.onClick !== source.onClick) target.onClick = source.onClick;
+    if (target.onAdded !== source.onAdded) target.onAdded = source.onAdded;
 }
 
 interface PolylineCommonProps {
