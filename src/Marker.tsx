@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useMapViewScope } from './MapViewScope';
+import { useAddProgress, type AddProgressCallbacks } from './AddProgress';
 import {
   createMarkerState,
   type MarkerState,
@@ -31,7 +32,7 @@ function MarkerWithState({ state }: MarkerStateProps): null {
     return null;
 }
 
-interface MarkersProps {
+interface MarkersProps extends AddProgressCallbacks {
     states: MarkerState[];
 }
 
@@ -39,8 +40,9 @@ interface MarkersProps {
  * Efficiently registers many markers without per-marker effects.
  * Mirrors `MarkerCompose.kt#Markers(states)`.
  */
-export function Markers({ states }: MarkersProps): null {
+export function Markers({ states, onAddStart, onAddProgress, onAddEnd }: MarkersProps): null {
     const { markerCollector } = useMapViewScope();
+    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd });
     const stableStatesRef = useRef<Map<string, MarkerState>>(new Map());
 
     useEffect(() => {
@@ -72,8 +74,9 @@ export function Markers({ states }: MarkersProps): null {
             if (added.length > 0 || removedIds.length > 0) {
                 markerCollector.applyDiff(added, removedIds);
             }
+            trackAdd(added, removedIds);
         });
-    }, [states, markerCollector]);
+    }, [states, markerCollector, trackAdd]);
 
     useEffect(() => {
         const ownStates = stableStatesRef.current;

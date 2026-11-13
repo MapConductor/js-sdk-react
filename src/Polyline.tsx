@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useMapViewScope } from './MapViewScope';
 import { OwnedOverlays } from './OwnedOverlays';
+import { useAddProgress, type AddProgressCallbacks } from './AddProgress';
 import {
   createPolylineState,
   type PolylineState,
@@ -33,7 +34,7 @@ function PolylineWithState({ state }: PolylineStateProps): null {
     return null;
 }
 
-interface PolylinesProps {
+interface PolylinesProps extends AddProgressCallbacks {
     states: readonly PolylineState[];
 }
 
@@ -46,13 +47,16 @@ interface PolylinesProps {
  * and no others. A state whose id stays from one list to the next keeps its
  * first object, which takes the new values in place.
  */
-export function Polylines({ states }: PolylinesProps): null {
+export function Polylines({ states, onAddStart, onAddProgress, onAddEnd }: PolylinesProps): null {
     const { polylineCollector } = useMapViewScope();
     const owned = useMemo(() => new OwnedOverlays(polylineCollector, syncPolylineState), [polylineCollector]);
 
+    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd });
+
     useEffect(() => {
-        owned.set(states);
-    }, [states, owned]);
+        const { added, removedIds } = owned.set(states);
+        trackAdd(added, removedIds);
+    }, [states, owned, trackAdd]);
 
     useEffect(() => () => owned.clear(), [owned]);
 

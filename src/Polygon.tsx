@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useMapViewScope } from './MapViewScope';
+import { useAddProgress, type AddProgressCallbacks } from './AddProgress';
 import {
   createPolygonState,
   type PolygonState,
@@ -34,7 +35,7 @@ function PolygonWithState({ state }: PolygonStateProps): null {
     return null;
 }
 
-interface PolygonsProps {
+interface PolygonsProps extends AddProgressCallbacks {
     states: PolygonState[];
 }
 
@@ -42,8 +43,9 @@ interface PolygonsProps {
  * Efficiently registers many polygons without per-polygon effects.
  * Mirrors `PolygonComponent.kt#Polygons(states)` and the `<Markers>` collection.
  */
-export function Polygons({ states }: PolygonsProps): null {
+export function Polygons({ states, onAddStart, onAddProgress, onAddEnd }: PolygonsProps): null {
     const { polygonCollector } = useMapViewScope();
+    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd });
     const stableStatesRef = useRef<Map<string, PolygonState>>(new Map());
 
     useEffect(() => {
@@ -73,8 +75,9 @@ export function Polygons({ states }: PolygonsProps): null {
             if (added.length > 0 || removedIds.length > 0) {
                 polygonCollector.applyDiff(added, removedIds);
             }
+            trackAdd(added, removedIds);
         });
-    }, [states, polygonCollector]);
+    }, [states, polygonCollector, trackAdd]);
 
     useEffect(() => {
         const ownStates = stableStatesRef.current;

@@ -1,6 +1,7 @@
 export * from './MapContext';
 // useMapViewScope は内部配線なので公開しない（`@mapconductor/js-sdk-react/internal`）。
 export { MapViewScope, MapViewScopeProvider } from './MapViewScope';
+export type { AddProgressCallbacks } from './AddProgress';
 export * from './Marker';
 export * from './Circle';
 export * from './Polygon';
