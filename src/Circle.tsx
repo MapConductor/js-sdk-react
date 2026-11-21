@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { useMapViewScope } from './MapViewScope';
 import { OwnedOverlays } from './OwnedOverlays';
 import { useAddProgress, type AddProgressCallbacks } from './AddProgress';
+import { useOverlayTileActivity } from './OverlayTileActivity';
 import {
   createCircleState,
   type CircleState,
@@ -50,11 +51,11 @@ export function Circles({ states, onAddStart, onAddProgress, onAddEnd }: Circles
     const { circleCollector } = useMapViewScope();
     const owned = useMemo(() => new OwnedOverlays(circleCollector, syncCircleState), [circleCollector]);
 
-    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd });
+    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd }, useOverlayTileActivity('circle'));
 
     useEffect(() => {
         const { added, removedIds } = owned.set(states);
-        trackAdd(added, removedIds);
+        trackAdd(added, removedIds, owned.size);
     }, [states, owned, trackAdd]);
 
     useEffect(() => () => owned.clear(), [owned]);

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useMapViewScope } from './MapViewScope';
 import { OwnedOverlays } from './OwnedOverlays';
 import { useAddProgress, type AddProgressCallbacks } from './AddProgress';
+import { useOverlayTileActivity } from './OverlayTileActivity';
 import {
   createPolylineState,
   type PolylineState,
@@ -51,11 +52,11 @@ export function Polylines({ states, onAddStart, onAddProgress, onAddEnd }: Polyl
     const { polylineCollector } = useMapViewScope();
     const owned = useMemo(() => new OwnedOverlays(polylineCollector, syncPolylineState), [polylineCollector]);
 
-    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd });
+    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd }, useOverlayTileActivity('polyline'));
 
     useEffect(() => {
         const { added, removedIds } = owned.set(states);
-        trackAdd(added, removedIds);
+        trackAdd(added, removedIds, owned.size);
     }, [states, owned, trackAdd]);
 
     useEffect(() => () => owned.clear(), [owned]);

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useMapViewScope } from './MapViewScope';
 import { useAddProgress, type AddProgressCallbacks } from './AddProgress';
+import { useOverlayTileActivity } from './OverlayTileActivity';
 import {
   createPolygonState,
   type PolygonState,
@@ -45,7 +46,7 @@ interface PolygonsProps extends AddProgressCallbacks {
  */
 export function Polygons({ states, onAddStart, onAddProgress, onAddEnd }: PolygonsProps): null {
     const { polygonCollector } = useMapViewScope();
-    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd });
+    const trackAdd = useAddProgress({ onAddStart, onAddProgress, onAddEnd }, useOverlayTileActivity('polygon'));
     const stableStatesRef = useRef<Map<string, PolygonState>>(new Map());
 
     useEffect(() => {
@@ -75,7 +76,7 @@ export function Polygons({ states, onAddStart, onAddProgress, onAddEnd }: Polygo
             if (added.length > 0 || removedIds.length > 0) {
                 polygonCollector.applyDiff(added, removedIds);
             }
-            trackAdd(added, removedIds);
+            trackAdd(added, removedIds, stableStatesRef.current.size);
         });
     }, [states, polygonCollector, trackAdd]);
 
