@@ -74,7 +74,7 @@ export function Markers({ states, onAddStart, onAddProgress, onAddEnd }: Markers
             if (added.length > 0 || removedIds.length > 0) {
                 markerCollector.applyDiff(added, removedIds);
             }
-            trackAdd(added, removedIds);
+            trackAdd(added, removedIds, stableStatesRef.current.size);
         });
     }, [states, markerCollector, trackAdd]);
 

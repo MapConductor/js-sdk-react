@@ -12,19 +12,26 @@ export { I as InfoBubbleEntry, M as MarkerAnimationStore } from './MarkerAnimati
  * shows nothing until they are drawn, and these say that work is going on.
  *
  * "On the map" is what each state's `onAdded` means: drawn natively, or, for a
- * state drawn in tiles, its tiles handed to the map (their images may still be
- * loading).
+ * state drawn in tiles, its tiles handed to the map. The work does not end
+ * there for tiles, so the collection also counts as busy while its tiles are
+ * being drawn ({@link AddProgressTracker.drawingChanged}): after a filter
+ * change, and while the camera moves to where tiles are not drawn yet.
  *
- * - `onAddStart(total)`: a list brought states that are not on the map yet;
- *   `total` is how many.
+ * - `onAddStart(total)`: a list was handed over, or tiles have been drawn for
+ *   {@link DRAW_START_DELAY_MS} without one; `total` is how many states the
+ *   list brought that are not on the map yet (0 when it only removed or
+ *   updated states, or for tiles alone). An empty list after an empty one
+ *   calls nothing.
  * - `onAddProgress(added, total)`: how many of them are on the map so far, at
- *   most every 100 ms, and once more with `added === total` before the end.
- * - `onAddEnd(total)`: all of them are on the map. A state taken out of the
- *   list before it got there no longer counts against the end.
+ *   most every 100 ms, and once more with `added === total` before the end
+ *   when `total` is not 0.
+ * - `onAddEnd(total)`: all of them are on the map and nothing has been drawn
+ *   for {@link SETTLE_MS}. A state taken out of the list before it got there
+ *   no longer counts against the end.
  *
  * A list that brings new states while an earlier one is still being added
  * starts over: a new `onAddStart` with only the new states, and no `onAddEnd`
- * for the earlier list. A list that only updates or removes states calls nothing.
+ * for the earlier list.
  */
 interface AddProgressCallbacks {
     onAddStart?: (total: number) => void;
