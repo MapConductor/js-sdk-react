@@ -7,8 +7,10 @@ import {
   circleMutations,
   CircleOverlay,
   type PolylineState,
+  polylineMutations,
   PolylineOverlay,
   type PolygonState,
+  polygonMutations,
   PolygonOverlay,
   type GroundImageState,
   GroundImageOverlay,
@@ -24,8 +26,8 @@ export class MapViewScope {
     readonly markerCollector = new OverlayCollector<MarkerState>();
     readonly markerAnimationStore = new MarkerAnimationStore();
     readonly circleCollector = new OverlayCollector<CircleState>(circleMutations);
-    readonly polylineCollector = new OverlayCollector<PolylineState>();
-    readonly polygonCollector = new OverlayCollector<PolygonState>();
+    readonly polylineCollector = new OverlayCollector<PolylineState>(polylineMutations);
+    readonly polygonCollector = new OverlayCollector<PolygonState>(polygonMutations);
     readonly groundImageCollector = new OverlayCollector<GroundImageState>();
     readonly rasterLayerCollector = new OverlayCollector<RasterLayerState>();
     readonly bubbleCollector = new OverlayCollector<InfoBubbleEntry>();
